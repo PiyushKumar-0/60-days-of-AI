@@ -120,8 +120,7 @@ I aim to become an AI Engineer who builds intelligent products that solve real-w
 
 # 📫 Connect With Me
 
-* 💼 LinkedIn: *Add your LinkedIn profile*
-* 🌐 Portfolio: *Add your portfolio link*
+* 💼 LinkedIn: https://www.linkedin.com/in/piyush-kumar-a261623a1/
 * 💻 GitHub: https://github.com/PiyushKumar-0
 
 ---

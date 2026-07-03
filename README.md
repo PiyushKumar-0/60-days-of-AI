@@ -2,7 +2,7 @@
 # 🧠 AI Personality Profile
 
 <p align="center">
-  <img src="./ai-personality-profile.png" alt="AI Personality Profile" width="100%">
+  <img src="https://github.com/PiyushKumar-0/60-days-of-AI/blob/main/Day-1%20profile.png.png" alt="AI Personality Profile" width="100%">
 </p>
 
 <h1 align="center">🚀 AI Personality Profile — Piyush Kumar</h1>

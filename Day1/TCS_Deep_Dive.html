@@ -1,0 +1,502 @@
+<style>
+  :root{
+    --ink:#0B1420;
+    --ink-2:#101B2C;
+    --paper:#F3EEE1;
+    --paper-dim:#DCD5C2;
+    --rule:#3A4658;
+    --amber:#C8963E;
+    --amber-2:#E4B368;
+    --green:#5C8A6A;
+    --red:#B3543F;
+    --text-soft:#AEB9C9;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box;}
+  .tcs-report{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--serif);
+    padding:0;
+    margin:0;
+    border-radius:6px;
+    overflow:hidden;
+    border:1px solid var(--rule);
+  }
+  .tcs-report .masthead{
+    padding:28px 32px 20px;
+    border-bottom:2px solid var(--amber);
+    background:linear-gradient(180deg, var(--ink-2), var(--ink));
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .tcs-report .masthead .id{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    color:var(--amber-2);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .tcs-report .masthead h1{
+    font-size:34px;
+    margin:0;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .tcs-report .masthead .sub{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--text-soft);
+    margin-top:6px;
+  }
+  .tcs-report .price-block{
+    text-align:right;
+    font-family:var(--mono);
+  }
+  .tcs-report .price-block .cmp{
+    font-size:30px;
+    color:var(--amber-2);
+    font-weight:600;
+  }
+  .tcs-report .price-block .tag{
+    font-size:11px;
+    color:var(--text-soft);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+  }
+  .tcs-report .stamp{
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 12px;
+    border:1.5px solid var(--green);
+    color:var(--green);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    transform:rotate(-1.5deg);
+    border-radius:3px;
+  }
+  .tcs-report nav.tabs{
+    display:flex;
+    overflow-x:auto;
+    background:var(--ink-2);
+    border-bottom:1px solid var(--rule);
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  .tcs-report nav.tabs button{
+    background:none;
+    border:none;
+    color:var(--text-soft);
+    padding:13px 18px;
+    cursor:pointer;
+    white-space:nowrap;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    border-bottom:2px solid transparent;
+    transition:all .15s ease;
+  }
+  .tcs-report nav.tabs button:hover{ color:var(--paper); }
+  .tcs-report nav.tabs button.active{
+    color:var(--amber-2);
+    border-bottom:2px solid var(--amber);
+  }
+  .tcs-report .panel{
+    display:none;
+    padding:28px 32px 34px;
+  }
+  .tcs-report .panel.active{ display:block; }
+  .tcs-report h2{
+    font-size:19px;
+    margin:0 0 14px;
+    color:var(--amber-2);
+    font-weight:600;
+    border-bottom:1px solid var(--rule);
+    padding-bottom:8px;
+  }
+  .tcs-report h3{
+    font-size:14px;
+    color:var(--paper);
+    margin:20px 0 8px;
+    font-family:var(--mono);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--text-soft);
+  }
+  .tcs-report p{ line-height:1.65; color:var(--paper); font-size:14.5px; margin:0 0 12px;}
+  .tcs-report .metric-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:1px;
+    background:var(--rule);
+    border:1px solid var(--rule);
+    margin-bottom:18px;
+  }
+  .tcs-report .metric{
+    background:var(--ink-2);
+    padding:14px 16px;
+  }
+  .tcs-report .metric .label{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--text-soft);
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    margin-bottom:6px;
+  }
+  .tcs-report .metric .value{
+    font-family:var(--mono);
+    font-size:19px;
+    color:var(--amber-2);
+    font-weight:600;
+  }
+  .tcs-report .metric .note{ font-size:10.5px; color:var(--text-soft); margin-top:4px;}
+  .tcs-report .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  @media (max-width:640px){ .tcs-report .two-col{grid-template-columns:1fr;} }
+  .tcs-report ul.list{ margin:0; padding-left:0; list-style:none; }
+  .tcs-report ul.list li{
+    padding:8px 0 8px 20px;
+    position:relative;
+    line-height:1.5;
+    font-size:14px;
+    border-bottom:1px dashed var(--rule);
+  }
+  .tcs-report ul.list.pros li:before{ content:"+"; position:absolute; left:0; color:var(--green); font-family:var(--mono); font-weight:700;}
+  .tcs-report ul.list.cons li:before{ content:"–"; position:absolute; left:0; color:var(--red); font-family:var(--mono); font-weight:700;}
+  .tcs-report table{ width:100%; border-collapse:collapse; font-size:13px; font-family:var(--mono); margin-bottom:16px;}
+  .tcs-report table th{
+    text-align:left; padding:8px 10px; background:var(--ink-2);
+    color:var(--amber-2); border-bottom:2px solid var(--amber); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .tcs-report table td{ padding:8px 10px; border-bottom:1px solid var(--rule); color:var(--paper); }
+  .tcs-report table tr.hl td{ color:var(--amber-2); font-weight:600; }
+  .tcs-report .chart-wrap{ background:var(--ink-2); border:1px solid var(--rule); border-radius:4px; padding:16px; margin-bottom:18px; }
+  .tcs-report .chart-title{ font-family:var(--mono); font-size:11px; color:var(--text-soft); text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px;}
+  .tcs-report .flag{
+    font-family:var(--mono); font-size:12px; color:var(--red); background:rgba(179,84,63,0.12);
+    border:1px solid var(--red); padding:8px 12px; border-radius:3px; margin-bottom:12px;
+  }
+  .tcs-report .badge{
+    display:inline-block; font-family:var(--mono); font-size:10.5px; padding:2px 8px; border-radius:10px;
+    margin-left:6px; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .tcs-report .badge.safe{ background:rgba(92,138,106,.18); color:var(--green); border:1px solid var(--green);}
+  .tcs-report .badge.watch{ background:rgba(200,150,62,.18); color:var(--amber-2); border:1px solid var(--amber);}
+  .tcs-report .range-bar{ position:relative; height:6px; background:var(--rule); border-radius:3px; margin:16px 0 6px; }
+  .tcs-report .range-bar .fill{ position:absolute; height:6px; background:linear-gradient(90deg,var(--red),var(--amber),var(--green)); width:100%; border-radius:3px; opacity:.35;}
+  .tcs-report .range-bar .marker{ position:absolute; top:-7px; width:2px; height:20px; background:var(--paper); }
+  .tcs-report .range-labels{ display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--text-soft);}
+  .tcs-report .closing{
+    margin-top:24px; padding:14px 16px; background:var(--ink-2); border-left:3px solid var(--amber);
+    font-family:var(--mono); font-size:11.5px; color:var(--text-soft); line-height:1.6;
+  }
+  .tcs-report .quality-tag{ font-family:var(--mono); font-size:12px; padding:3px 10px; border-radius:3px; }
+</style>
+
+<div class="tcs-report">
+  <div class="masthead">
+    <div>
+      <div class="id">NSE: TCS · BSE: 532540 · IT Services — Consulting</div>
+      <h1>Tata Consultancy Services Ltd.</h1>
+      <div class="sub">Deep Dive · Fundamentals-only research · Generated via stock-fundamental-research skill</div>
+    </div>
+    <div class="price-block">
+      <div class="tag">Close, 1 Jul 2026</div>
+      <div class="cmp">₹1,983</div>
+      <div class="tag">▼ -2.41% on the day</div>
+      <div class="stamp">Fundamental Quality: Strong</div>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button class="active" data-tab="snapshot">Snapshot</button>
+    <button data-tab="valuation">Valuation</button>
+    <button data-tab="growth">Growth</button>
+    <button data-tab="health">Health</button>
+    <button data-tab="returns">Returns</button>
+    <button data-tab="peers">Peers</button>
+    <button data-tab="ownership">Ownership</button>
+    <button data-tab="view">View</button>
+  </nav>
+
+  <!-- SNAPSHOT -->
+  <div class="panel active" id="snapshot">
+    <h2>Company Snapshot</h2>
+    <p>TCS is the flagship IT services arm of the Tata Group, offering consulting-led, AI and cloud-powered technology, engineering and business solutions to clients across BFSI, consumer, healthcare, manufacturing and other verticals. It is India's largest IT services exporter by revenue. <span style="color:var(--text-soft); font-size:12px;">(Source: Screener.in)</span></p>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="label">CMP</div><div class="value">₹1,983</div><div class="note">Screener.in, close 1 Jul 2026</div></div>
+      <div class="metric"><div class="label">Market Cap</div><div class="value">₹7.16L Cr</div><div class="note">Screener.in</div></div>
+      <div class="metric"><div class="label">Stock P/E</div><div class="value">13.7×</div><div class="note">Screener.in</div></div>
+      <div class="metric"><div class="label">Book Value</div><div class="value">₹296</div><div class="note">P/B ≈ 6.7×</div></div>
+      <div class="metric"><div class="label">Dividend Yield</div><div class="value">3.23%</div><div class="note">Screener.in</div></div>
+      <div class="metric"><div class="label">Face Value</div><div class="value">₹1.00</div><div class="note">Screener.in</div></div>
+      <div class="metric"><div class="label">ROE</div><div class="value">51.8%</div><div class="note">Screener.in, latest year</div></div>
+      <div class="metric"><div class="label">ROCE</div><div class="value">63.0%</div><div class="note">Screener.in, latest year</div></div>
+    </div>
+
+    <h3>52-week range</h3>
+    <div class="range-bar"><div class="fill"></div><div class="marker" style="left:1.2%"></div></div>
+    <div class="range-labels"><span>₹1,976 (Low)</span><span>CMP ₹1,983 sits near the 52W low</span><span>₹3,490 (High)</span></div>
+
+    <div class="two-col" style="margin-top:22px;">
+      <div>
+        <h3>Screener Pros</h3>
+        <ul class="list pros">
+          <li>Good dividend yield of 3.23%, with a healthy payout ratio of ~77–81% over recent years.</li>
+          <li>Strong 3-year average ROE of 51.9%, well above the "good" threshold of 15%.</li>
+          <li>Near debt-free balance sheet; borrowings are a small fraction of net worth.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Screener Cons</h3>
+        <ul class="list cons">
+          <li>Five-year sales growth of ~10% is modest for a stock trading at premium historical multiples; TTM growth has slowed to ~5%.</li>
+          <li>Stock price CAGR has been negative over 1/3/5-year windows despite steady earnings growth — a re-rating down in multiples.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:12px; color:var(--text-soft); margin-top:10px;">🚩 Live price may have moved since 1 Jul 2026 (data lag ~17 days as of this report). Verify CMP at Screener.in / NSE before acting on any figure.</p>
+  </div>
+
+  <!-- VALUATION -->
+  <div class="panel" id="valuation">
+    <h2>Valuation</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="label">P/E (TCS)</div><div class="value">13.7×</div><div class="note">vs sector median reported ~27.6× (ValueResearch, late Jun 2026 basis)</div></div>
+      <div class="metric"><div class="label">P/B (TCS)</div><div class="value">~6.7×</div><div class="note">CMP ÷ Book Value, Screener.in</div></div>
+      <div class="metric"><div class="label">10Y Avg ROE</div><div class="value">43%</div><div class="note">vs 52% last year — Screener.in</div></div>
+    </div>
+    <p><strong>Valuation verdict: Cheap relative to sector, cheap relative to its own history.</strong> One source reported TCS trading at 13.7–15.4× earnings against an IT-services peer median near 27–28×, a discount of roughly 40–44%. TCS's own 5-year average P/E has typically run well above the current multiple, so on both cross-sectional and historical bases the stock screens as cheap rather than fair or expensive. <span style="color:var(--text-soft); font-size:12px;">(Source: ValueResearchOnline, Screener.in — cross-checked)</span></p>
+    <p style="font-size:12.5px; color:var(--text-soft);">Note: A discounted P/E can reflect genuine undervaluation, or the market pricing in slower growth, margin pressure, or sector-wide derating (see Growth and View tabs). It is not, by itself, a buy signal.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-title">P/E — TCS vs large-cap IT peers (current)</div>
+      <canvas id="chartPE" height="90"></canvas>
+    </div>
+  </div>
+
+  <!-- GROWTH -->
+  <div class="panel" id="growth">
+    <h2>Growth</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="label">Sales CAGR 3Y</div><div class="value">6%</div></div>
+      <div class="metric"><div class="label">Sales CAGR 5Y</div><div class="value">10%</div></div>
+      <div class="metric"><div class="label">Sales CAGR TTM</div><div class="value">5%</div></div>
+      <div class="metric"><div class="label">Profit CAGR 3Y</div><div class="value">8%</div></div>
+      <div class="metric"><div class="label">Profit CAGR 5Y</div><div class="value">9%</div></div>
+      <div class="metric"><div class="label">Profit CAGR TTM</div><div class="value">8%</div></div>
+    </div>
+    <p><strong>Growth trend: Steady, with a mild deceleration at the margin.</strong> Sales growth has stepped down from a 10-year CAGR of 9% and 5-year CAGR of 10% to a TTM figure of 5%, while profit growth has held up better (8–9% across windows), aided by stable operating margins near 26–27%. <span style="color:var(--text-soft); font-size:12px;">(Source: Screener.in)</span></p>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Revenue &amp; Net Profit — FY2015 to FY2026 (₹ Cr, consolidated)</div>
+      <canvas id="chartRevProfit" height="110"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Quarterly EPS — last 9 quarters (₹)</div>
+      <canvas id="chartEPS" height="90"></canvas>
+    </div>
+  </div>
+
+  <!-- HEALTH -->
+  <div class="panel" id="health">
+    <h2>Financial Health</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="label">Debt / Equity</div><div class="value">~0.11×</div><div class="note">Safe<span class="badge safe">&lt; 1</span></div></div>
+      <div class="metric"><div class="label">FY26 FCF</div><div class="value">₹48,013 Cr</div><div class="note">Up from ₹26,461 Cr in FY19 — Strong &amp; growing</div></div>
+      <div class="metric"><div class="label">CFO / Operating Profit</div><div class="value">92%</div><div class="note">Healthy cash conversion — Screener.in</div></div>
+      <div class="metric"><div class="label">Dividend Payout</div><div class="value">81%</div><div class="note">FY26, Screener.in</div></div>
+    </div>
+    <p>🚩 Interest Coverage and Current Ratio were not directly stated on the fetched source page — verify at Screener.in "Ratios" tab before relying on them. Based on the reported interest expense (~₹1,227 Cr FY26) against an operating profit of ₹72,398 Cr, coverage is directionally very high, consistent with the company's near debt-free profile.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Free Cash Flow — FY2015 to FY2026 (₹ Cr)</div>
+      <canvas id="chartFCF" height="100"></canvas>
+    </div>
+  </div>
+
+  <!-- RETURNS -->
+  <div class="panel" id="returns">
+    <h2>Returns on Capital</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="label">ROE — Last Year</div><div class="value">52%</div><div class="note">Good<span class="badge safe">&gt;15</span></div></div>
+      <div class="metric"><div class="label">ROE — 3Y Avg</div><div class="value">52%</div></div>
+      <div class="metric"><div class="label">ROE — 5Y Avg</div><div class="value">49%</div></div>
+      <div class="metric"><div class="label">ROCE — Latest (FY26)</div><div class="value">63%</div></div>
+    </div>
+    <p>ROE and ROCE have both trended up over the past decade (ROCE from ~50% in FY15 to 63% in FY26), reflecting an asset-light, high-margin services model rather than reinvestment-heavy growth. <span style="color:var(--text-soft); font-size:12px;">(Source: Screener.in)</span></p>
+    <div class="chart-wrap">
+      <div class="chart-title">ROCE trend — FY2015 to FY2026 (%)</div>
+      <canvas id="chartROCE" height="100"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Stock price CAGR by window — illustrative trend only, not a forecast</div>
+      <canvas id="chartPriceCAGR" height="90"></canvas>
+    </div>
+  </div>
+
+  <!-- PEERS -->
+  <div class="panel" id="peers">
+    <h2>Peer Comparison</h2>
+    <table>
+      <tr><th>Company</th><th>Mkt Cap (₹Cr)</th><th>P/E</th><th>P/B</th><th>ROE</th><th>D/E</th><th>Div. Yield</th></tr>
+      <tr class="hl"><td>TCS</td><td>7,16,423</td><td>13.7×</td><td>~6.7×</td><td>51.8%</td><td>~0.11×</td><td>3.23%</td></tr>
+      <tr><td>Infosys</td><td>4,63,775</td><td>15.6×</td><td>5.15×</td><td>31.6%</td><td>0.10×</td><td>4.22%</td></tr>
+      <tr><td>HCLTech</td><td>3,26,519</td><td>18.0×</td><td>~4.3×</td><td>24.0%</td><td>🚩 low, verify</td><td>4.49%</td></tr>
+      <tr><td>Wipro</td><td>1,74,308</td><td>🚩 verify</td><td>🚩 verify</td><td>🚩 verify</td><td>🚩 verify</td><td>6.25%</td></tr>
+    </table>
+    <p style="font-size:12px; color:var(--text-soft);">Sources: Screener.in (TCS, HCLTech, Wipro), ScanX (Infosys). HCLTech P/B is derived from CMP ₹1,204 ÷ Book Value ₹277. Figures marked 🚩 were not confidently retrieved for Wipro / part of HCLTech in this pass — verify at Screener.in before use.</p>
+    <div class="chart-wrap">
+      <div class="chart-title">ROE — TCS vs Infosys vs HCLTech</div>
+      <canvas id="chartPeerROE" height="90"></canvas>
+    </div>
+    <h3>Where TCS leads</h3>
+    <p>Highest ROE and ROCE in the peer set by a wide margin; lowest P/E and P/B among the three names with confirmed data, suggesting the market is pricing TCS at a relative discount despite superior capital efficiency.</p>
+    <h3>Where peers lead</h3>
+    <p>Infosys and HCLTech both offer higher dividend yields at current prices. Infosys carries the lowest absolute debt ratio of the group. HCLTech has shown steadier revenue mix diversification (software products alongside services) per company disclosures.</p>
+  </div>
+
+  <!-- OWNERSHIP -->
+  <div class="panel" id="ownership">
+    <h2>Ownership Pattern</h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="label">Promoter Holding</div><div class="value">71.77%</div><div class="note">Flat since FY24 — Screener.in</div></div>
+      <div class="metric"><div class="label">Pledging</div><div class="value">None reported</div><div class="note">No pledge flagged by source</div></div>
+      <div class="metric"><div class="label">FII Holding</div><div class="value">9.66%</div><div class="note">Down from 12.70% (Mar'24)</div></div>
+      <div class="metric"><div class="label">DII Holding</div><div class="value">13.34%</div><div class="note">Up from 10.61% (Mar'24)</div></div>
+    </div>
+    <p>Promoter holding (Tata Sons) has stayed essentially flat around 71.8% with no pledging reported — a clean, stable ownership base. The more notable shift is on the institutional side: FIIs have steadily trimmed their stake over the last eight quarters while DIIs (domestic mutual funds/insurers) have added, roughly offsetting each other in aggregate float. <span style="color:var(--text-soft); font-size:12px;">(Source: Screener.in shareholding pattern)</span></p>
+    <div class="chart-wrap">
+      <div class="chart-title">Shareholding trend — FY2023 to FY2026 (%)</div>
+      <canvas id="chartOwnership" height="110"></canvas>
+    </div>
+  </div>
+
+  <!-- VIEW -->
+  <div class="panel" id="view">
+    <h2>Overall View</h2>
+    <div class="two-col">
+      <div>
+        <h3>Strengths</h3>
+        <ul class="list pros">
+          <li>Best-in-class capital efficiency: ROE ~52%, ROCE 63%, on a near debt-free balance sheet.</li>
+          <li>Consistently growing free cash flow (₹48,013 Cr in FY26) with strong cash conversion.</li>
+          <li>Trades at a meaningful discount to both its own historical P/E and the IT-services peer median.</li>
+          <li>Stable, unpledged promoter holding and a long dividend-paying track record (77–81% payout).</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Watch-points</h3>
+        <ul class="list cons">
+          <li>Revenue growth has decelerated to TTM ~5%, the slowest in the trailing decade.</li>
+          <li>FII holding has declined for eight consecutive quarters — a trend worth monitoring alongside FII flows sector-wide.</li>
+          <li>Stock price has underperformed earnings growth (negative 1/3/5-year price CAGR), signalling continued multiple compression risk if growth doesn't reaccelerate.</li>
+        </ul>
+      </div>
+    </div>
+    <h3>Key metric to track next</h3>
+    <p>TTM revenue growth and deal TCV (order book) commentary in the upcoming Q1 FY27 earnings call — a re-acceleration here would be the clearest fundamental signal to watch, distinct from any price movement.</p>
+    <h3>Fundamental Quality</h3>
+    <p><span class="quality-tag badge safe" style="font-size:14px; padding:6px 14px;">Strong</span> — exceptional returns on capital and a conservative balance sheet are only partly offset by slowing top-line growth.</p>
+    <h3>Data Confidence</h3>
+    <p><span class="badge watch">Moderate</span> — core TCS figures cross-checked across Screener.in and secondary sources; a few Wipro and HCLTech peer datapoints could not be confirmed with two independent sources in this pass and are flagged 🚩 above.</p>
+
+    <div class="closing">
+      This is a view of the fundamentals for educational purposes only. It is not investment advice and not a buy/sell/hold recommendation. Verify all figures independently. The final decision is yours.
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+(function(){
+  var root = document.currentScript.previousElementSibling.parentElement || document;
+  // Tabs
+  var buttons = document.querySelectorAll('.tcs-report nav.tabs button');
+  var panels = document.querySelectorAll('.tcs-report .panel');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      panels.forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  var paper = '#F3EEE1', amber = '#C8963E', amber2='#E4B368', green='#5C8A6A', red='#B3543F', rule='#3A4658', soft='#AEB9C9';
+  Chart.defaults.color = soft;
+  Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+  Chart.defaults.font.size = 11;
+  var gridOpt = { color: 'rgba(58,70,88,0.5)' };
+
+  new Chart(document.getElementById('chartPE'), {
+    type:'bar',
+    data:{ labels:['TCS','Infosys','HCLTech'],
+      datasets:[{ label:'P/E (x)', data:[13.7,15.6,18.0], backgroundColor:[amber2, '#6E8CA0', '#6E8CA0'], borderRadius:3 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ grid:gridOpt, beginAtZero:true }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartRevProfit'), {
+    type:'bar',
+    data:{ labels:['FY15','FY16','FY17','FY18','FY19','FY20','FY21','FY22','FY23','FY24','FY25','FY26'],
+      datasets:[
+        { label:'Revenue', data:[94648,108646,117966,123104,146463,156949,164177,191754,225458,240893,255324,267021], backgroundColor:'rgba(110,140,160,0.55)', borderRadius:2 },
+        { label:'Net Profit', data:[20060,24338,26357,25880,31562,32447,32562,38449,42303,46099,48797,49454], backgroundColor:amber2, borderRadius:2 }
+      ]},
+    options:{ plugins:{legend:{labels:{color:paper}}}, scales:{ y:{ grid:gridOpt }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartEPS'), {
+    type:'line',
+    data:{ labels:['Jun24','Sep24','Dec24','Mar25','Jun25','Sep25','Dec25','Mar26'],
+      datasets:[{ label:'EPS (₹)', data:[33.28,32.92,34.22,33.79,35.27,33.37,29.45,37.92], borderColor:amber2, backgroundColor:'rgba(200,150,62,0.15)', fill:true, tension:.3, pointBackgroundColor:amber2 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ grid:gridOpt }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartFCF'), {
+    type:'bar',
+    data:{ labels:['FY15','FY16','FY17','FY18','FY19','FY20','FY21','FY22','FY23','FY24','FY25','FY26'],
+      datasets:[{ label:'FCF (₹Cr)', data:[16426,17144,23270,23263,26461,29281,35663,36985,38902,41688,44994,48013], backgroundColor: green, borderRadius:3 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ grid:gridOpt }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartROCE'), {
+    type:'line',
+    data:{ labels:['FY15','FY16','FY17','FY18','FY19','FY20','FY21','FY22','FY23','FY24','FY25','FY26'],
+      datasets:[{ label:'ROCE %', data:[50,51,44,39,47,47,49,54,59,64,65,63], borderColor:amber2, backgroundColor:'rgba(200,150,62,0.12)', fill:true, tension:.3, pointBackgroundColor:amber2 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ grid:gridOpt }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartPriceCAGR'), {
+    type:'bar',
+    data:{ labels:['10 Year','5 Year','3 Year','1 Year'],
+      datasets:[{ label:'Stock Price CAGR %', data:[5,-10,-16,-42], backgroundColor: function(ctx){ return ctx.raw < 0 ? red : green; }, borderRadius:3 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ grid:gridOpt }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartPeerROE'), {
+    type:'bar',
+    data:{ labels:['TCS','Infosys','HCLTech'],
+      datasets:[{ label:'ROE %', data:[51.8,31.6,24.0], backgroundColor:[amber2,'#6E8CA0','#6E8CA0'], borderRadius:3 }]},
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ grid:gridOpt, beginAtZero:true }, x:{ grid:{display:false} } } }
+  });
+
+  new Chart(document.getElementById('chartOwnership'), {
+    type:'line',
+    data:{ labels:['Mar23','Mar24','Mar25','Mar26'],
+      datasets:[
+        { label:'Promoters', data:[72.30,71.77,71.77,71.77], borderColor:amber2, backgroundColor:'rgba(200,150,62,.08)', fill:false, tension:.2 },
+        { label:'FIIs', data:[12.72,12.70,12.04,9.66], borderColor:red, backgroundColor:'rgba(179,84,63,.08)', fill:false, tension:.2 },
+        { label:'DIIs', data:[9.58,10.61,11.49,13.34], borderColor:green, backgroundColor:'rgba(92,138,106,.08)', fill:false, tension:.2 }
+      ]},
+    options:{ plugins:{legend:{labels:{color:paper}}}, scales:{ y:{ grid:gridOpt }, x:{ grid:{display:false} } } }
+  });
+})();
+</script>

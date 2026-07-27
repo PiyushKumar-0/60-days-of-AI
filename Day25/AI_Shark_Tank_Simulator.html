@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>AI Shark Tank Simulator</title>
+<style>
+body{font-family:Arial;background:#111;color:#fff;margin:0;padding:20px}
+.card{max-width:800px;margin:auto;background:#1d1d1d;padding:20px;border-radius:12px}
+input,textarea{width:100%;margin:8px 0;padding:8px}
+button{padding:10px 16px;background:#00b894;color:#fff;border:0;border-radius:8px;cursor:pointer}
+#out{margin-top:20px;padding:10px;background:#2b2b2b;border-radius:8px}
+</style></head>
+<body><div class="card">
+<h1>🦈 AI Shark Tank Simulator</h1>
+<input id="name" placeholder="Startup Name">
+<textarea id="problem" placeholder="Problem Statement"></textarea>
+<textarea id="solution" placeholder="Solution"></textarea>
+<input id="revenue" placeholder="Revenue Model">
+<input id="audience" placeholder="Target Audience">
+<input id="funding" placeholder="Funding Ask">
+<button onclick="pitch()">Pitch to Sharks</button>
+<div id="out"></div>
+</div>
+<script>
+function score(){return Math.floor(Math.random()*41)+60;}
+function decision(s){return s>85?"INVEST":s>75?"COME BACK LATER":"REJECT";}
+function pitch(){
+let s=score();
+document.getElementById('out').innerHTML=`
+<h2>${document.getElementById('name').value}</h2>
+<p><b>VC:</b> Market looks promising.</p>
+<p><b>Founder:</b> Can you execute this quickly?</p>
+<p><b>Customer:</b> I'd use it if pricing is fair.</p>
+<p><b>Angel:</b> Show me profitability.</p>
+<hr>
+<h3>Score: ${s}/100</h3>
+<h2>Decision: ${decision(s)}</h2>
+<p>Suggested Valuation: ₹${(s*2).toFixed(0)} Lakhs</p>
+<p>Funding: ${document.getElementById('funding').value||"Negotiable"}</p>`;
+}
+</script></body></html>

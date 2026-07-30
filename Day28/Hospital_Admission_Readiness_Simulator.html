@@ -1,0 +1,50 @@
+
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://cdn.tailwindcss.com"></script><title>Hospital Admission Readiness Simulator</title></head>
+<body class="bg-slate-100">
+<div class="max-w-4xl mx-auto p-6">
+<h1 class="text-3xl font-bold text-blue-700">🏥 Hospital Admission Readiness Simulator</h1>
+<p class="text-sm text-gray-600">Illustrative training data only.</p>
+<div class="grid md:grid-cols-2 gap-4 mt-4">
+<input id="provider" class="p-2 border rounded" placeholder="Provider">
+<input id="physician" class="p-2 border rounded" placeholder="Attending Physician">
+<select id="dx" class="p-2 border rounded">
+<option>Acute MI</option><option>CHF</option><option>Pneumonia</option><option>Elective Surgery</option><option>Hip Fracture</option></select>
+<select id="type" class="p-2 border rounded">
+<option>Inpatient</option><option>Observation</option><option>Emergency</option><option>ICU</option><option>Same-Day Surgery</option></select>
+<select id="pa" class="p-2 border rounded"><option>Approved</option><option>Pending</option><option>Denied</option></select>
+<input id="date" type="date" class="p-2 border rounded">
+</div>
+<div id="obs" class="hidden mt-3 p-3 bg-yellow-100 rounded">CMS 2-Midnight Rule applies — different cost-sharing, SNF eligibility, and billing than inpatient. Medicare patients require written MOON notification.</div>
+<button onclick="analyze()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">🏥 Analyze Admission Readiness</button>
+<div id="out" class="mt-6 hidden">
+<h2 class="text-xl font-semibold">Readiness: <span id="score"></span>%</h2>
+<div id="note" class="my-2 text-red-700"></div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-2" id="cards"></div>
+<div class="mt-4 space-x-2">
+<button onclick="act(10)" class="bg-green-600 text-white px-3 py-1 rounded">Upload Docs</button>
+<button onclick="act(8)" class="bg-green-600 text-white px-3 py-1 rounded">Verify Insurance</button>
+<button onclick="act(7)" class="bg-green-600 text-white px-3 py-1 rounded">Assign Bed</button>
+<button onclick="appeal()" class="bg-orange-600 text-white px-3 py-1 rounded">Appeal PA</button>
+</div>
+<div id="gov" class="hidden mt-4 p-3 bg-blue-100 rounded">Industry benchmarks (estimates only): PA turnaround 3–5 days · Inpatient denial rate ~8–10% · PA rework cost ~$11/transaction.</div>
+<div id="final" class="mt-4 font-bold"></div>
+</div></div>
+<script>
+let s=0;
+function analyze(){
+document.getElementById('obs').classList.toggle('hidden',type.value!=='Observation');
+s=30+Math.floor(Math.random()*31);
+if(pa.value==='Denied'&&type.value==='ICU')s=Math.min(s,69);
+score.textContent=s;
+out.classList.remove('hidden');
+cards.innerHTML='';
+['PA:'+pa.value,'Insurance:Pending','Bed:Waiting','Documentation:Incomplete','Orders:Pending','Consent:Pending'].forEach(x=>{let d=document.createElement('div');d.className='p-2 bg-white rounded shadow';d.textContent=x;cards.appendChild(d);});
+note.textContent=(dx.value==='Acute MI'||dx.value==='CHF')?'InterQual/Milliman thresholds apply — ensure documentation meets medical necessity standards before UR review.':'';
+finish();
+}
+function act(v){s=Math.min(100,s+v);if(pa.value==='Denied'&&type.value==='ICU')s=Math.min(s,69);score.textContent=s;finish();}
+function appeal(){if(pa.value==='Denied'){pa.value='Approved';alert('Appeal successful. PA Approved.');s+=15;score.textContent=s;finish();}}
+function finish(){gov.classList.toggle('hidden',s<75);final.innerHTML=s>=90?'✅ Admit - Ready for admission.':'⚠ Not Ready - Complete remaining administrative tasks.';}
+</script>
+</body></html>

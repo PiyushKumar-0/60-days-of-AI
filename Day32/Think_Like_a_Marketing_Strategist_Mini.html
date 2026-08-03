@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Think Like a Marketing Strategist</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+body{margin:0;font-family:Arial;background:#111827;color:#eee}
+.wrap{max-width:800px;margin:40px auto;padding:20px}.card{background:#1f2937;padding:20px;border-radius:14px}
+button{margin:6px;padding:10px 16px;border:none;border-radius:8px;background:#3b82f6;color:#fff;cursor:pointer}
+h1,h2{color:#60a5fa}.pill{display:inline-block;background:#374151;padding:6px 10px;margin:4px;border-radius:20px}
+</style></head><body><div id="root"></div>
+<script type="text/babel">
+const random=()=>({name:["Coffee Corner","FitFlex","TechNest"][Math.floor(Math.random()*3)],aud:["Students","Professionals","Creators"][Math.floor(Math.random()*3)]});
+function App(){
+ const [step,setStep]=React.useState(0);
+ const [mode,setMode]=React.useState("");
+ const [biz,setBiz]=React.useState({name:"",aud:""});
+ const data=mode==="random"?random():biz;
+ const pillars=["Education","Story","Behind the Scenes","Offers","Thought Leadership"];
+ return <div className="wrap"><div className="card">
+ {step===0&&<><h1>Think Like a Marketing Strategist</h1><p>Learn how marketers think before they create content.</p>
+ <button onClick={()=>{setMode("business");setStep(1)}}>Business</button>
+ <button onClick={()=>{setMode("personal");setStep(1)}}>Personal Brand</button>
+ <button onClick={()=>{setMode("random");setStep(2)}}>Random Client</button></>}
+ {step===1&&<><h2>{mode==="personal"?"Personal Brand":"Business"} Details</h2>
+ <input placeholder="Name" onChange={e=>setBiz({...biz,name:e.target.value})}/><br/><br/>
+ <input placeholder="Audience" onChange={e=>setBiz({...biz,aud:e.target.value})}/><br/>
+ <button onClick={()=>setStep(2)}>Continue</button></>}
+ {step===2&&<><h2>Understand the Brand</h2>
+ <p><b>Name:</b> {data.name}</p><p><b>Audience:</b> {data.aud}</p>
+ <p><b>What is this?</b> Know who you serve.</p><p><b>Why it matters?</b> Better targeting creates better marketing.</p>
+ <button onClick={()=>setStep(3)}>Next</button></>}
+ {step===3&&<><h2>Platforms</h2><div className="pill">Instagram</div><div className="pill">LinkedIn</div><div className="pill">YouTube</div>
+ <p>Choose platforms where your audience spends time.</p><button onClick={()=>setStep(4)}>Next</button></>}
+ {step===4&&<><h2>Content Pillars</h2>{pillars.map(p=><div key={p} className="pill">{p}</div>)}
+ <button onClick={()=>setStep(5)}>Generate Report</button></>}
+ {step===5&&<><h2>Growth Report</h2><ul><li>Audience: {data.aud}</li><li>Best Platform: {mode==="personal"?"LinkedIn":"Instagram"}</li><li>Growth Potential: High</li><li>Lesson: Consistency wins.</li></ul>
+ <button onClick={()=>window.location.reload()}>Replay</button></>}
+ </div></div>
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
+</script></body></html>

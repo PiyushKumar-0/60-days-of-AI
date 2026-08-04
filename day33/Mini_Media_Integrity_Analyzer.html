@@ -1,0 +1,37 @@
+<!doctype html>
+<html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Mini Media Integrity Analyzer</title>
+<style>
+body{font-family:Arial;background:#08150f;color:#eef;margin:0}main{max-width:800px;margin:auto;padding:24px}
+.card{background:#123024;padding:20px;border-radius:12px;margin:16px 0}.btn{background:#2ecc71;border:0;padding:10px 16px;border-radius:8px;cursor:pointer}
+textarea{width:100%;height:70px} .metric{display:inline-block;margin:8px;padding:10px;background:#1b4735;border-radius:8px}
+.hidden{display:none}
+</style></head><body><main>
+<h1>Mini Media Integrity Analyzer</h1>
+<div><span class=metric id=m1>Headline: --</span><span class=metric id=m2>Emotion: --</span></div>
+<div class=card id=c1>
+<h2>Headline Detective</h2>
+<p><b>Why?</b> Headlines can exaggerate. Compare the title with the article.</p>
+<h3>"Miracle Drink Erases Stress Overnight!"</h3>
+<p>Article: A small study found participants reported feeling slightly calmer after 4 weeks. More research is needed.</p>
+<textarea id=t1 placeholder="Which words seem exaggerated?"></textarea><br>
+<button class=btn onclick="r1()">Reveal</button>
+<div id=o1 class=hidden></div></div>
+<div class="card hidden" id=c2>
+<h2>Emotion Detector</h2>
+<p><b>Why?</b> Emotional wording can influence decisions.</p>
+<p>Post: "Only careless people ignore this warning. Share NOW!"</p>
+<textarea id=t2 placeholder="How did this make you feel?"></textarea><br>
+<button class=btn onclick="r2()">Reveal</button>
+<div id=o2 class=hidden></div></div>
+<div class="card hidden" id=d>
+<h2>Dashboard</h2>
+<p><b>Overall Score:</b> 82%</p>
+<ul><li>Read beyond headlines.</li><li>Pause before sharing.</li><li>Check evidence.</li></ul>
+<button class=btn onclick="location.reload()">Replay</button>
+</div>
+</main>
+<script>
+function r1(){m1.textContent='Headline: 40%';o1.classList.remove('hidden');o1.innerHTML='<p><b>Accuracy:</b> 40%. Exaggerated: <mark>Miracle</mark>, <mark>Erases</mark>, <mark>Overnight</mark>.<br>Fair headline: Small Study Suggests Drink May Help Reduce Stress.</p>';c2.classList.remove('hidden')}
+function r2(){m2.textContent='Emotion: High';o2.classList.remove('hidden');o2.innerHTML='<p>Technique: Fear + urgency.<br>Neutral rewrite: Verify this information before sharing.</p>';d.classList.remove('hidden')}
+</script></body></html>

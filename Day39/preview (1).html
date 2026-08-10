@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF Splitter & Merger</title>
+<style>
+:root{--bg:#080b12;--panel:#111622;--panel2:#171d2b;--text:#eef2ff;--muted:#8e99ae;--line:#273044;--accent:#7c5cff;--accent2:#24d6a5;--danger:#ff5d73;--shadow:0 20px 60px #0008}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#241852 0,#080b12 35%),#080b12;color:var(--text);font:14px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}button{cursor:pointer;border:0}.app{max-width:1380px;margin:auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.brand{display:flex;gap:12px;align-items:center}.logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#b16cff);font-size:22px;box-shadow:0 10px 30px #7c5cff44}.brand h1{font-size:20px;margin:0}.brand p{margin:3px 0;color:var(--muted);font-size:12px}
+.theme{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:10px 13px}
+.tabs{display:flex;background:#0d111a;border:1px solid var(--line);padding:5px;border-radius:14px;margin-bottom:20px}.tab{flex:1;padding:12px;border-radius:10px;background:transparent;color:var(--muted);font-weight:700}.tab.active{background:var(--panel2);color:white;box-shadow:0 5px 18px #0005}
+.tool{display:none}.tool.active{display:block}.hero{margin-bottom:18px}.hero h2{font-size:28px;margin:0 0 6px}.hero p{color:var(--muted);margin:0}
+.drop{border:1px dashed #4a5570;background:linear-gradient(145deg,#121827,#0e131e);border-radius:18px;padding:34px;text-align:center;transition:.2s}.drop.over{border-color:var(--accent);background:#17172a;transform:translateY(-2px)}.drop strong{display:block;font-size:17px;margin-bottom:7px}.drop span{color:var(--muted)}.primary{background:linear-gradient(135deg,var(--accent),#9b5cff);color:#fff;padding:11px 17px;border-radius:10px;font-weight:800;box-shadow:0 8px 25px #7c5cff33}.secondary{background:var(--panel2);color:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:10px}.danger{color:#ff8a9a}
+input[type=file]{display:none}.layout{display:grid;grid-template-columns:1.5fr .8fr;gap:18px;margin-top:18px}.panel{background:linear-gradient(180deg,#121824,#0e131d);border:1px solid var(--line);border-radius:17px;padding:18px;box-shadow:var(--shadow)}.panel h3{margin:0 0 14px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;max-height:610px;overflow:auto;padding:2px}.thumb{background:#0a0e16;border:1px solid var(--line);border-radius:12px;padding:8px;position:relative;transition:.2s}.thumb:hover{border-color:#596783;transform:translateY(-2px)}.thumb canvas{width:100%;height:155px;object-fit:contain;background:white;border-radius:7px;display:block}.num{position:absolute;top:15px;left:15px;background:#111a;color:#fff;padding:3px 7px;border-radius:6px;font-size:11px}.thumb small{display:block;color:var(--muted);padding:7px 2px 1px}
+.fields{display:grid;gap:10px}.fields label{color:var(--muted);font-size:12px;font-weight:700}.fields input{width:100%;background:#0b1019;color:#fff;border:1px solid var(--line);border-radius:9px;padding:10px;outline:none}.fields input:focus{border-color:var(--accent)}.hint{font-size:12px;color:var(--muted);line-height:1.5}.result{background:#0a1018;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px}.invalid{border-color:var(--danger)!important;box-shadow:0 0 0 2px #ff5d7320}.ok{border-color:var(--accent2)!important}.status{margin-top:12px;color:var(--muted);font-size:12px;min-height:18px}.progress{height:6px;background:#222a38;border-radius:10px;overflow:hidden;margin:10px 0;display:none}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.2s}
+.file-list{display:grid;gap:9px}.file{display:flex;align-items:center;gap:10px;background:#0b1018;border:1px solid var(--line);padding:10px;border-radius:11px}.handle{cursor:grab;color:#67748e;font-size:18px}.file canvas{width:38px;height:48px;object-fit:contain;background:#fff;border-radius:4px}.file .meta{flex:1;min-width:0}.file .meta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.file .meta span{font-size:11px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}.stat{background:#0b1018;border:1px solid var(--line);border-radius:10px;padding:11px}.stat b{display:block;font-size:18px}.stat span{color:var(--muted);font-size:11px}
+.empty{text-align:center;color:var(--muted);padding:35px}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.toast{position:fixed;right:20px;bottom:20px;background:#171d2b;border:1px solid var(--line);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);transform:translateY(120px);transition:.25s;z-index:9}.toast.show{transform:none}.light{--bg:#f5f7fb;--panel:#fff;--panel2:#eef1f7;--text:#172033;--muted:#657087;--line:#dce1eb}.light body{background:#f5f7fb}.light .drop,.light .panel{background:#fff}.light .tabs{background:#e9edf5}.light .thumb,.light .file,.light .stat,.light .result{background:#f8f9fc}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.app{padding:14px}.hero h2{font-size:23px}.thumbs{max-height:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="brand"><div class="logo">▤</div><div><h1>PDF Splitter & Merger</h1><p>Private, browser-based PDF workspace</p></div></div><button class="theme" id="theme">☾ Theme</button></header>
+<div class="tabs"><button class="tab active" data-tab="split">✂ PDF Splitter</button><button class="tab" data-tab="merge">＋ PDF Merger</button></div>
+
+<section class="tool active" id="split">
+<div class="hero"><h2>Split a PDF your way.</h2><p>Preview every page, build multiple ranges, then export clean PDF files locally.</p></div>
+<div class="drop" id="splitDrop"><strong>Drop a PDF here</strong><span>or choose a file from your computer</span><br><br><label class="primary">Choose PDF<input id="splitFile" type="file" accept="application/pdf"></label></div>
+<div class="layout" id="splitWorkspace" style="display:none">
+<div class="panel"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h3 id="splitTitle">Pages</h3><button class="secondary" id="clearSplit">Clear</button></div><div class="thumbs" id="splitThumbs"></div></div>
+<div class="panel"><h3>Split configuration</h3>
+<div class="toolbar"><button class="secondary mode active" data-mode="ranges">Custom ranges</button><button class="secondary mode" data-mode="every">Every N pages</button></div>
+<div id="rangeMode"><div class="fields"><label for="ranges">Ranges</label><input id="ranges" placeholder="Examples: 1-3, 5-7, 9"></div><p class="hint">Use commas for multiple outputs. Example <b>1-3, 5-8, 10</b> creates three PDFs.</p></div>
+<div id="everyMode" style="display:none"><div class="fields"><label for="every">Pages per PDF</label><input id="every" type="number" min="1" placeholder="e.g. 5"></div></div>
+<div class="result" id="splitPreview">Enter a range to preview the output structure.</div>
+<div class="progress" id="splitProgress"><div class="bar"></div></div><div class="status" id="splitStatus"></div>
+<button class="primary" id="splitBtn" style="width:100%;margin-top:10px">Split & Download</button>
+</div></div>
+</section>
+
+<section class="tool" id="merge">
+<div class="hero"><h2>Merge PDFs in the order you want.</h2><p>Drag files into the workspace, reorder them, preview pages, and export one polished PDF.</p></div>
+<div class="drop" id="mergeDrop"><strong>Drop multiple PDFs here</strong><span>Drag and drop files or select several at once</span><br><br><label class="primary">Choose PDFs<input id="mergeFiles" type="file" accept="application/pdf" multiple></label></div>
+<div class="layout"><div class="panel"><h3>Merge queue</h3><div class="file-list" id="fileList"><div class="empty">No PDFs added yet.</div></div></div>
+<div class="panel"><h3>Output overview</h3><div class="stats"><div class="stat"><b id="fileCount">0</b><span>Files</span></div><div class="stat"><b id="pageCount">0</b><span>Pages</span></div><div class="stat"><b id="sizeEstimate">—</b><span>Estimate</span></div></div><p class="hint">Files are processed locally in your browser. Nothing is uploaded.</p><div class="progress" id="mergeProgress"><div class="bar"></div></div><div class="status" id="mergeStatus"></div><button class="primary" id="mergeBtn" style="width:100%;margin-top:10px">Merge & Download</button></div></div>
+</section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<script type="module">
+import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+import { PDFDocument } from "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm";
+pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let splitPdf=null, splitBytes=null, splitPages=0, mergeItems=[], dragIndex=null;
+
+function toast(t){let x=$("#toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2600)}
+function setProgress(id,v){let p=$(id);p.style.display=v<100?"block":"none";p.querySelector(".bar").style.width=v+"%"}
+function download(bytes,name){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([bytes],{type:"application/pdf"}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+async function pageCanvas(pdf,n,w=220){let p=await pdf.getPage(n), base=p.getViewport({scale:1}), scale=w/base.width, vp=p.getViewport({scale});let c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;await p.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;return c}
+
+async function loadSplit(file){
+ if(!file||file.type!=="application/pdf"){toast("Please select a PDF.");return}
+ splitBytes=await file.arrayBuffer(); splitPdf=await pdfjsLib.getDocument({data:splitBytes}).promise; splitPages=splitPdf.numPages;
+ $("#splitWorkspace").style.display="grid";$("#splitTitle").textContent=`${file.name} · ${splitPages} pages`;
+ let box=$("#splitThumbs");box.textContent="";
+ for(let i=1;i<=splitPages;i++){let d=document.createElement("div");d.className="thumb";let c=await pageCanvas(splitPdf,i);d.append(c);let n=document.createElement("span");n.className="num";n.textContent=i;d.append(n);let s=document.createElement("small");s.textContent=`Page ${i}`;d.append(s);box.append(d)}
+ validateSplit();
+}
+function parseRanges(){
+ let raw=$("#ranges").value.trim(); if(!raw)return {ok:false,items:[]};
+ let items=[], bad=false;
+ for(let part of raw.split(",")){part=part.trim();let m=part.match(/^(\d+)(?:\s*-\s*(\d+))?$/);if(!m){bad=true;continue}let a=+m[1],b=m[2]?+m[2]:a;if(a<1||b<1||a>b||b>splitPages){bad=true;continue}items.push([a,b])}
+ return {ok:!bad&&items.length>0,items};
+}
+function validateSplit(){
+ let input=$("#ranges");input.classList.remove("invalid","ok");
+ let out=$("#splitPreview");
+ if(!splitPages){out.textContent="Upload a PDF first.";return}
+ if($("#rangeMode").style.display!=="none"){
+   let r=parseRanges(); if(!r.ok){input.classList.add("invalid");out.innerHTML="Invalid range. Use page numbers within <b>1–"+splitPages+"</b>, such as 1-3, 5-7, 10.";$("#splitBtn").disabled=true;return}
+   input.classList.add("ok");out.innerHTML="<b>Output structure</b><br>"+r.items.map((x,i)=>`PDF ${i+1}: pages ${x[0]}–${x[1]} (${x[1]-x[0]+1} pages)`).join("<br>");$("#splitBtn").disabled=false;
+ }else{
+   let n=+$("#every").value;if(!n||n<1){$("#every").classList.add("invalid");out.textContent="Enter a valid number of pages.";$("#splitBtn").disabled=true;return}
+   $("#every").classList.add("ok");let parts=[];for(let a=1;a<=splitPages;a+=n)parts.push([a,Math.min(splitPages,a+n-1)]);out.innerHTML="<b>Output structure</b><br>"+parts.map((x,i)=>`PDF ${i+1}: pages ${x[0]}–${x[1]}`).join("<br>");$("#splitBtn").disabled=false;
+ }
+}
+async function exportRanges(items){
+ let src=await PDFDocument.load(splitBytes);
+ for(let i=0;i<items.length;i++){setProgress("#splitProgress",Math.round(i/items.length*90));let out=await PDFDocument.create();let ids=[];for(let p=items[i][0];p<=items[i][1];p++)ids.push(p-1);let pages=await out.copyPages(src,ids);pages.forEach(p=>out.addPage(p));download(await out.save(),`split-${i+1}.pdf`)}
+ setProgress("#splitProgress",100);$("#splitStatus").textContent=`Created ${items.length} PDF file${items.length>1?"s":""}.`;toast("Split complete.");
+}
+async function doSplit(){if(!splitBytes)return toast("Upload a PDF first.");let items=$("#rangeMode").style.display!=="none"?parseRanges().items:(()=>{let n=+$("#every").value,a=[];for(let p=1;p<=splitPages;p+=n)a.push([p,Math.min(splitPages,p+n-1)]);return a})();if(!items.length)return;$("#splitStatus").textContent="Processing locally…";await exportRanges(items)}
+
+async function addMerge(files){for(let f of files){if(f.type!=="application/pdf"){toast(`${f.name} is not a PDF.`);continue}try{let bytes=await f.arrayBuffer(),pdf=await pdfjsLib.getDocument({data:bytes.slice(0)}).promise,canvas=await pageCanvas(pdf,1,100);mergeItems.push({file:f,bytes,pages:pdf.numPages,canvas})}catch(e){toast(`Could not read ${f.name}`)}}renderMerge()}
+function renderMerge(){let list=$("#fileList");list.textContent="";if(!mergeItems.length){list.innerHTML='<div class="empty">No PDFs added yet.</div>'}mergeItems.forEach((x,i)=>{let d=document.createElement("div");d.className="file";d.draggable=true;d.dataset.i=i;d.innerHTML=`<span class="handle">⋮⋮</span>`;d.append(x.canvas);let m=document.createElement("div");m.className="meta";m.innerHTML=`<b>${escapeHtml(x.file.name)}</b><span>${x.pages} page${x.pages!==1?"s":""} · ${(x.file.size/1024/1024).toFixed(2)} MB</span>`;d.append(m);let b=document.createElement("button");b.className="secondary";b.textContent="×";b.onclick=()=>{mergeItems.splice(i,1);renderMerge()};d.append(b);d.addEventListener("dragstart",()=>dragIndex=i);d.addEventListener("dragover",e=>e.preventDefault());d.addEventListener("drop",e=>{e.preventDefault();let to=+d.dataset.i;if(dragIndex!==to){let [v]=mergeItems.splice(dragIndex,1);mergeItems.splice(to,0,v);renderMerge()}});list.append(d)});
+ $("#fileCount").textContent=mergeItems.length;let pages=mergeItems.reduce((a,x)=>a+x.pages,0);$("#pageCount").textContent=pages;let bytes=mergeItems.reduce((a,x)=>a+x.file.size,0);$("#sizeEstimate").textContent=bytes?`~${(bytes/1024/1024).toFixed(1)} MB`:"—";$("#mergeBtn").disabled=!mergeItems.length;
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function doMerge(){if(!mergeItems.length)return;$("#mergeStatus").textContent="Merging locally…";let out=await PDFDocument.create();for(let i=0;i<mergeItems.length;i++){setProgress("#mergeProgress",Math.round(i/mergeItems.length*90));let src=await PDFDocument.load(mergeItems[i].bytes);let pages=await out.copyPages(src,src.getPageIndices());pages.forEach(p=>out.addPage(p))}download(await out.save(),"merged-document.pdf");setProgress("#mergeProgress",100);$("#mergeStatus").textContent="Merged PDF is ready.";toast("Merge complete.")}
+
+function setupDrop(el,input,fn){["dragenter","dragover"].forEach(e=>el.addEventListener(e,x=>{x.preventDefault();el.classList.add("over")}));["dragleave","drop"].forEach(e=>el.addEventListener(e,x=>{x.preventDefault();el.classList.remove("over")}));el.addEventListener("drop",e=>fn(e.dataTransfer.files));input.addEventListener("change",e=>fn(e.target.files))}
+setupDrop($("#splitDrop"),$("#splitFile"),f=>loadSplit(f[0]));setupDrop($("#mergeDrop"),$("#mergeFiles"),addMerge);
+$$(".tab").forEach(b=>b.onclick=()=>{$$(".tab").forEach(x=>x.classList.remove("active"));$$(".tool").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("#"+b.dataset.tab).classList.add("active")});
+$$(".mode").forEach(b=>b.onclick=()=>{$$(".mode").forEach(x=>x.classList.remove("active"));b.classList.add("active");let every=b.dataset.mode==="every";$("#rangeMode").style.display=every?"none":"block";$("#everyMode").style.display=every?"block":"none";validateSplit()});
+$("#ranges").oninput=validateSplit;$("#every").oninput=validateSplit;$("#splitBtn").onclick=doSplit;$("#mergeBtn").onclick=doMerge;
+$("#clearSplit").onclick=()=>{$("#splitWorkspace").style.display="none";$("#splitThumbs").textContent="";splitPdf=null;splitBytes=null;$("#splitFile").value=""};
+$("#theme").onclick=()=>{document.documentElement.classList.toggle("light");$("#theme").textContent=document.documentElement.classList.contains("light")?"☀ Theme":"☾ Theme"};
+document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="o"){e.preventDefault();$("#split").classList.contains("active")?$("#splitFile").click():$("#mergeFiles").click()}if(e.key==="Escape")toast("Ready.")});
+</script>
+</body>
+</html>

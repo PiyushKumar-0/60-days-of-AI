@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personal Financial Command Center</title>
+<style>
+:root{--bg:#07100d;--panel:#0d1915;--panel2:#10221c;--text:#e9fff5;--muted:#91aaa0;--accent:#35e6a0;--accent2:#7c6cff;--danger:#ff6b7a;--line:#1d342c;--shadow:0 20px 60px #0008}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#183b2d 0,#07100d 35%),var(--bg);color:var(--text);font:14px Inter,system-ui,sans-serif}button,input,select{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{padding:24px 16px;border-right:1px solid var(--line);background:#08120fdd;backdrop-filter:blur(20px);position:sticky;top:0;height:100vh}.logo{font-size:20px;font-weight:800;margin:5px 8px 30px}.logo span{color:var(--accent)}nav button{width:100%;text-align:left;padding:12px;margin:3px 0;border:0;background:transparent;color:var(--muted);border-radius:12px}nav button.active,nav button:hover{background:#153128;color:var(--text)}.side small{display:block;color:#657b73;margin:25px 8px 8px}.main{padding:28px;max-width:1500px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}.eyebrow{color:var(--accent);font-weight:700}.top h1{margin:5px 0;font-size:30px}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#10211b;color:var(--text);padding:10px 14px;border-radius:10px}.primary{background:var(--accent);color:#042017;border-color:var(--accent);font-weight:800}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:linear-gradient(145deg,#10221c,#0b1713);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.label{color:var(--muted);font-size:12px}.value{font-size:25px;font-weight:800;margin:8px 0}.positive{color:var(--accent)}.negative{color:var(--danger)}.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-top:14px}.card h2{font-size:16px;margin:0 0 14px}.bars{height:190px;display:flex;align-items:end;gap:10px;border-bottom:1px solid var(--line);padding:10px}.bar{flex:1;background:linear-gradient(#35e6a0,#1d7457);border-radius:8px 8px 2px 2px;min-height:12px;position:relative}.bar span{position:absolute;bottom:-23px;width:100%;text-align:center;color:var(--muted);font-size:11px}.ring{width:150px;height:150px;border-radius:50%;background:conic-gradient(var(--accent) 0 72%,#233b32 72%);display:grid;place-items:center;margin:8px auto}.ring:after{content:"72";width:108px;height:108px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:30px;font-weight:800}.progress{height:8px;background:#20362e;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent);border-radius:20px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.pill{padding:5px 8px;border-radius:20px;background:#17352b;color:var(--accent);font-size:11px}.section{display:none}.section.active{display:block}.form{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.form input,.form select{width:100%;padding:11px;background:#091510;border:1px solid var(--line);color:var(--text);border-radius:10px}.insight{border-left:3px solid var(--accent);padding:12px;background:#0d211a;border-radius:0 10px 10px 0;margin:9px 0}.calc{display:grid;grid-template-columns:1fr 1fr;gap:12px}.big{font-size:34px;color:var(--accent);font-weight:900}.footer{color:#657b73;text-align:center;margin:30px}.toast{position:fixed;bottom:20px;right:20px;background:#15372b;padding:12px 16px;border:1px solid var(--accent);border-radius:10px;display:none}
+@media(max-width:950px){.app{grid-template-columns:1fr}.side{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}nav{display:flex;overflow:auto}nav button{min-width:max-content}.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.form,.calc{grid-template-columns:1fr}}
+@media(max-width:600px){.main{padding:16px}.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+@media print{.side,.actions,button{display:none!important}.app{display:block}.main{max-width:none}.card{box-shadow:none;color:#111;background:white;border-color:#ddd}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="logo">FIN<span>•</span>COMMAND</div>
+  <nav>
+    <button class="active" onclick="show('overview',this)">◈ Overview</button>
+    <button onclick="show('budget',this)">▦ Budget & Spending</button>
+    <button onclick="show('education',this)">🎓 Education Planner</button>
+    <button onclick="show('insights',this)">✦ AI Insights</button>
+    <button onclick="show('investments',this)">↗ Investments</button>
+    <button onclick="show('goals',this)">◎ Goals</button>
+    <button onclick="show('tools',this)">⌘ What-if Tools</button>
+    <button onclick="show('learn',this)">? Learn</button>
+  </nav>
+  <small>PROFILE</small>
+  <div class="card" style="padding:13px">
+    <b>Student • Freelancer</b><br><span class="label">Income target: ₹5,000/mo</span>
+    <div style="margin-top:10px" class="progress"><i style="width:62%"></i></div>
+    <span class="label">Financial foundation 62%</span>
+  </div>
+</aside>
+<main class="main">
+<section id="overview" class="section active">
+<div class="top"><div><div class="eyebrow">SATURDAY • AUG 15, 2026</div><h1>Your Financial Command Center</h1><div class="label">Built around education, career growth and financial learning.</div></div><div class="actions"><button class="btn" onclick="window.print()">Print report</button><button class="btn primary" onclick="saveData()">Save</button></div></div>
+<div class="grid">
+ <div class="card"><div class="label">MONTHLY INCOME</div><div class="value">₹4,200</div><span class="positive">+16% vs last month</span></div>
+ <div class="card"><div class="label">MONTHLY SPENDING</div><div class="value">₹2,850</div><span class="positive">₹2,150 available</span></div>
+ <div class="card"><div class="label">INVESTMENTS</div><div class="value">₹8,750</div><span class="positive">+8.4% estimated</span></div>
+ <div class="card"><div class="label">FINANCIAL HEALTH</div><div class="value positive">72/100</div><span>Good foundation • improve consistency</span></div>
+</div>
+<div class="layout">
+ <div class="card"><h2>Cash Flow — Last 6 Months</h2><div class="bars"><div class="bar" style="height:48%"><span>Mar</span></div><div class="bar" style="height:61%"><span>Apr</span></div><div class="bar" style="height:55%"><span>May</span></div><div class="bar" style="height:74%"><span>Jun</span></div><div class="bar" style="height:67%"><span>Jul</span></div><div class="bar" style="height:86%"><span>Aug</span></div></div></div>
+ <div class="card"><h2>Financial Health</h2><div class="ring"></div><div class="row"><span>Saving habit</span><b>78%</b></div><div class="row"><span>Spending control</span><b>81%</b></div><div class="row"><span>Debt readiness</span><b>54%</b></div></div>
+</div>
+<div class="layout">
+ <div class="card"><h2>Priority Actions</h2>
+  <div class="row"><span>🎓 Build an education fund</span><span class="pill">High</span></div>
+  <div class="row"><span>📊 Track every expense for 30 days</span><span class="pill">High</span></div>
+  <div class="row"><span>💳 Review student-loan repayment plan</span><span class="pill">Medium</span></div>
+  <div class="row"><span>📈 Keep learning before increasing investment risk</span><span class="pill">Medium</span></div>
+ </div>
+ <div class="card"><h2>Goal: Skill Upgrade Fund</h2><div class="label">₹6,000 of ₹10,000</div><div style="margin:12px 0" class="progress"><i style="width:60%"></i></div><b>60%</b><p class="label">At ₹1,000/month, target is about 4 months away.</p></div>
+</div>
+</section>
+
+<section id="budget" class="section"><div class="top"><div><div class="eyebrow">CONTROL</div><h1>Budget & Spending</h1></div></div>
+<div class="card"><h2>Add a transaction</h2><div class="form"><input id="desc" placeholder="Description"><input id="amt" type="number" placeholder="Amount ₹"><select id="cat"><option>Education</option><option>Food</option><option>Travel</option><option>Subscriptions</option><option>Shopping</option><option>Other</option></select></div><button class="btn primary" style="margin-top:10px" onclick="addTx()">Add transaction</button></div>
+<div class="layout"><div class="card"><h2>Monthly budget</h2><div class="row"><span>Education</span><b>₹1,200 / ₹1,500</b></div><div class="progress"><i style="width:80%"></i></div><div class="row"><span>Food & essentials</span><b>₹900 / ₹1,200</b></div><div class="progress"><i style="width:75%"></i></div><div class="row"><span>Discretionary</span><b>₹750 / ₹900</b></div><div class="progress"><i style="width:83%"></i></div></div><div class="card"><h2>Smart rule</h2><div class="big">50 / 30 / 20</div><p class="label">Use this as a starting framework, not a rigid rule. With low income, prioritize essentials and a small consistent savings buffer.</p></div></div>
+<div class="card" style="margin-top:14px"><h2>Recent transactions</h2><div id="tx">No custom transactions yet.</div></div></section>
+
+<section id="education" class="section"><div class="top"><div><div class="eyebrow">CAREER CAPITAL</div><h1>Education & Skill Investment Planner</h1></div></div>
+<div class="grid"><div class="card"><div class="label">SKILL FUND</div><div class="value">₹6,000</div><span>of ₹10,000 goal</span></div><div class="card"><div class="label">MONTHLY ALLOCATION</div><div class="value">₹1,000</div><span>22% of income</span></div><div class="card"><div class="label">PROJECT ROI TARGET</div><div class="value">3×</div><span>income/career upside</span></div><div class="card"><div class="label">NEXT REVIEW</div><div class="value">30 days</div><span>measure progress</span></div></div>
+<div class="layout"><div class="card"><h2>Skill investments</h2><div class="row"><span>Web Development Course</span><b>₹2,000</b></div><div class="row"><span>Cloud / AI certification</span><b>₹3,000</b></div><div class="row"><span>Project tools & hosting</span><b>₹1,000</b></div></div><div class="card"><h2>Decision filter</h2><div class="insight">Before paying: Does this skill improve employability, portfolio quality, earning ability, or academic performance?</div><div class="insight">Prefer projects and recognized learning outcomes over collecting certificates.</div></div></div></section>
+
+<section id="insights" class="section"><div class="top"><div><div class="eyebrow">AI-STYLE ANALYSIS</div><h1>Financial Insights</h1></div></div>
+<div class="card"><h2>Personalized recommendations</h2><div class="insight"><b>1. Track first, optimize second.</b><br>You currently don't track expenses. Record 30 days of spending before making aggressive budget cuts.</div><div class="insight"><b>2. Protect your education budget.</b><br>Your stated priority is skills. Create a dedicated education bucket so discretionary spending doesn't consume it.</div><div class="insight"><b>3. Investing: learn before scaling.</b><br>Because you're still learning, focus on diversification, risk, fees and long-term behavior rather than chasing returns.</div><div class="insight"><b>4. Student debt deserves visibility.</b><br>Know the outstanding balance, interest rate and repayment timeline before increasing investment contributions.</div></div>
+</section>
+
+<section id="investments" class="section"><div class="top"><div><div class="eyebrow">WEALTH LEARNING</div><h1>Investment Snapshot</h1></div></div><div class="grid"><div class="card"><div class="label">PORTFOLIO</div><div class="value">₹8,750</div></div><div class="card"><div class="label">EST. RETURN</div><div class="value positive">+8.4%</div></div><div class="card"><div class="label">RISK LEVEL</div><div class="value">Moderate</div></div><div class="card"><div class="label">LEARNING STATUS</div><div class="value">Intermediate</div></div></div><div class="card" style="margin-top:14px"><h2>Learning checklist</h2><div class="row"><span>Diversification</span><span class="pill">Learned</span></div><div class="row"><span>Risk vs return</span><span class="pill">Learning</span></div><div class="row"><span>Fees & taxes</span><span class="pill">Next</span></div><div class="row"><span>Long-term compounding</span><span class="pill">Next</span></div></div></section>
+
+<section id="goals" class="section"><div class="top"><div><div class="eyebrow">PROGRESS</div><h1>Financial Goals</h1></div></div><div class="grid"><div class="card"><div class="label">SKILL FUND</div><div class="value">60%</div><div class="progress"><i style="width:60%"></i></div></div><div class="card"><div class="label">EMERGENCY BUFFER</div><div class="value">35%</div><div class="progress"><i style="width:35%"></i></div></div><div class="card"><div class="label">LOAN READINESS</div><div class="value">54%</div><div class="progress"><i style="width:54%"></i></div></div><div class="card"><div class="label">CAREER FUND</div><div class="value">20%</div><div class="progress"><i style="width:20%"></i></div></div></div></section>
+
+<section id="tools" class="section"><div class="top"><div><div class="eyebrow">SIMULATE</div><h1>What-if Tools</h1></div></div><div class="layout"><div class="card"><h2>Monthly savings simulator</h2><div class="form"><input id="save" type="number" value="1000" placeholder="Monthly savings"><input id="target" type="number" value="10000" placeholder="Goal"><input id="current" type="number" value="6000" placeholder="Already saved"></div><button class="btn primary" style="margin-top:10px" onclick="simulate()">Calculate</button><p>Months to goal: <span class="big" id="months">4</span></p></div><div class="card"><h2>Income growth scenario</h2><p class="label">If monthly freelance income rises from ₹4,200 to ₹6,000:</p><div class="big">+₹1,800</div><p class="label">Suggested use: 50% goals/savings, 30% education/career, 20% flexible spending.</p></div></div></section>
+
+<section id="learn" class="section"><div class="top"><div><div class="eyebrow">FINANCIAL LITERACY</div><h1>Learn & Plan</h1></div></div><div class="layout"><div class="card"><h2>Student finance checklist</h2><div class="row"><span>Track spending for 30 days</span><span>01</span></div><div class="row"><span>Build a small emergency buffer</span><span>02</span></div><div class="row"><span>Understand loan terms</span><span>03</span></div><div class="row"><span>Learn investment basics</span><span>04</span></div><div class="row"><span>Set one career-income goal</span><span>05</span></div></div><div class="card"><h2>AI prompts to learn</h2><div class="insight">“Explain diversification using a ₹1,000 monthly student example.”</div><div class="insight">“Compare saving for a certification vs investing the same amount.”</div><div class="insight">“Teach me how interest affects my student loan.”</div><div class="insight">“Create a 30-day beginner financial literacy plan.”</div></div></div></section>
+<div class="footer">Educational planning tool • Not personalized financial, tax, or investment advice. Verify important decisions with qualified professionals.</div>
+</main></div><div class="toast" id="toast">Saved locally ✓</div>
+<script>
+function show(id,btn){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');localStorage.setItem('pfc-section',id)}
+function toast(t='Saved locally ✓'){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1800)}
+function saveData(){localStorage.setItem('pfc-saved','true');toast()}
+function addTx(){let d=document.getElementById('desc').value,a=document.getElementById('amt').value,c=document.getElementById('cat').value;if(!d||!a)return toast('Enter description and amount');let tx=JSON.parse(localStorage.getItem('pfc-tx')||'[]');tx.unshift({d,a,c});localStorage.setItem('pfc-tx',JSON.stringify(tx));renderTx();document.getElementById('desc').value='';document.getElementById('amt').value='';toast('Transaction added ✓')}
+function renderTx(){let tx=JSON.parse(localStorage.getItem('pfc-tx')||'[]');document.getElementById('tx').innerHTML=tx.length?tx.slice(0,8).map(x=>`<div class="row"><span>${x.d} <small class="label">• ${x.c}</small></span><b>₹${Number(x.a).toLocaleString('en-IN')}</b></div>`).join(''):'No custom transactions yet.'}
+function simulate(){let s=+document.getElementById('save').value,t=+document.getElementById('target').value,c=+document.getElementById('current').value;document.getElementById('months').textContent=s>0?Math.max(0,Math.ceil((t-c)/s)): '—'}
+renderTx();
+</script></body></html>

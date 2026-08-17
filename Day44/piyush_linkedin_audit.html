@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PR #1 — LinkedIn Profile Audit — piyush-kumar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0e1016;
+    --panel: #14171f;
+    --panel-2: #191d27;
+    --border: #262b38;
+    --text: #e4e6ee;
+    --text-dim: #8890a4;
+    --text-faint: #565d70;
+    --add: #7ee787;
+    --add-bg: rgba(126,231,135,0.08);
+    --del: #ff7b72;
+    --del-bg: rgba(255,123,114,0.08);
+    --amber: #ffb454;
+    --blue: #6cb6ff;
+    --purple: #c9a7ff;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: rgba(126,231,135,0.25); }
+
+  /* ---- top bar: fake IDE window ---- */
+  .titlebar{
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display:flex; align-items:center; gap:10px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--text-dim);
+    position: sticky; top:0; z-index: 50;
+  }
+  .dot{ width:10px; height:10px; border-radius:50%; }
+  .dot.r{background:#ff5f56;} .dot.y{background:#ffbd2e;} .dot.g{background:#27c93f;}
+  .titlebar .path{ margin-left: 10px; color: var(--text-faint); }
+  .titlebar .path b{ color: var(--text); font-weight:600; }
+  .titlebar .badge{
+    margin-left:auto;
+    background: var(--del-bg); color: var(--del);
+    border: 1px solid rgba(255,123,114,0.3);
+    padding: 3px 10px; border-radius: 20px; font-weight:600;
+  }
+
+  /* ---- hero ---- */
+  .hero{
+    max-width: 980px; margin: 0 auto;
+    padding: 70px 24px 40px;
+  }
+  .eyebrow{
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.08em;
+    color: var(--purple); text-transform: uppercase; margin-bottom: 18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:''; width:20px; height:1px; background:var(--purple); }
+  h1.hero-title{
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  h1.hero-title .strike{
+    color: var(--text-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--del);
+    text-decoration-thickness: 2px;
+  }
+  .hero-sub{ color: var(--text-dim); font-size: 16.5px; max-width: 620px; margin-bottom: 32px; }
+
+  .score-row{
+    display:flex; gap: 14px; flex-wrap: wrap; align-items:stretch;
+  }
+  .score-card{
+    background: var(--panel); border:1px solid var(--border); border-radius: 10px;
+    padding: 18px 22px; flex:1; min-width: 160px;
+  }
+  .score-card .label{ font-family: var(--mono); font-size:11px; color: var(--text-faint); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;}
+  .score-card .value{ font-family: var(--mono); font-size: 30px; font-weight:700; }
+  .score-card.before .value{ color: var(--del); }
+  .score-card.after .value{ color: var(--add); }
+  .score-card.delta .value{ color: var(--amber); }
+  .score-card .value small{ font-size:15px; color: var(--text-faint); font-weight:500;}
+
+  /* ---- nav tabs ---- */
+  .tabs{
+    max-width: 980px; margin: 0 auto; padding: 0 24px;
+    display:flex; gap:4px; border-bottom:1px solid var(--border);
+    overflow-x:auto; scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    font-family: var(--mono); font-size: 13px; white-space:nowrap;
+    color: var(--text-faint); background:none; border:none;
+    padding: 14px 16px; cursor:pointer; border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .tab:hover{ color: var(--text); }
+  .tab.active{ color: var(--text); border-bottom-color: var(--amber); }
+
+  section.panel{ max-width: 980px; margin: 0 auto; padding: 44px 24px 20px; display:none; }
+  section.panel.active{ display:block; }
+
+  h2.section-title{
+    font-family: var(--mono); font-size: 13px; color: var(--amber);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+  h3.block-title{ font-size: 24px; font-weight: 800; margin-bottom: 22px; letter-spacing:-0.01em;}
+
+  /* ---- report card blocks ---- */
+  .card{
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-bottom: 18px;
+  }
+  .card-head{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 14px; flex-wrap:wrap;}
+  .card-head h4{ font-size: 17px; font-weight:700; }
+  .pill{
+    font-family: var(--mono); font-weight:700; font-size: 13px;
+    padding: 4px 12px; border-radius: 20px;
+  }
+  .pill.low{ background: var(--del-bg); color: var(--del); border:1px solid rgba(255,123,114,0.3);}
+  .pill.mid{ background: rgba(255,180,84,0.08); color: var(--amber); border:1px solid rgba(255,180,84,0.3);}
+  .pill.high{ background: var(--add-bg); color: var(--add); border:1px solid rgba(126,231,135,0.3);}
+
+  .quote{
+    font-family: var(--mono); font-size: 13.5px; color: var(--text-dim);
+    background: var(--panel-2); border-left: 3px solid var(--del);
+    padding: 10px 14px; border-radius: 4px; margin: 10px 0; overflow-x:auto;
+  }
+  .reveal{ margin-top: 12px; }
+  .reveal-line{ display:flex; gap: 10px; margin-bottom: 8px; font-size: 14.5px; }
+  .reveal-line .tag{ font-family: var(--mono); font-size: 15px; flex-shrink:0; width: 22px; }
+  .reveal-line b{ color: var(--text); }
+  .reveal-line span{ color: var(--text-dim); }
+
+  /* ---- diff blocks ---- */
+  .diff{
+    font-family: var(--mono); font-size: 13.5px; border-radius: 8px; overflow:hidden;
+    border: 1px solid var(--border); margin: 14px 0;
+  }
+  .diff-line{ padding: 10px 16px; white-space: pre-wrap; word-break: break-word; }
+  .diff-line.del{ background: var(--del-bg); color: #ffb3ad; border-left: 3px solid var(--del); }
+  .diff-line.add{ background: var(--add-bg); color: #b8f5bc; border-left: 3px solid var(--add); }
+  .diff-line .sym{ opacity:0.6; margin-right:8px; }
+
+  /* ---- options ---- */
+  .opt{
+    background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; margin-bottom:12px;
+  }
+  .opt .opt-label{ font-family:var(--mono); font-size:11px; color:var(--blue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px; }
+  .opt .opt-text{ font-size: 15.5px; font-weight:600; margin-bottom:8px; }
+  .opt .opt-why{ font-size: 13.5px; color: var(--text-dim); }
+
+  /* ---- keyword chips ---- */
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+  .chip{
+    font-family: var(--mono); font-size: 12.5px; background: rgba(108,182,255,0.08);
+    color: var(--blue); border:1px solid rgba(108,182,255,0.3); padding: 4px 10px; border-radius: 6px;
+  }
+  .chip.add-skill{ background: var(--add-bg); color: var(--add); border-color: rgba(126,231,135,0.3);}
+  .chip.rm-skill{ background: var(--del-bg); color: var(--del); border-color: rgba(255,123,114,0.3); text-decoration: line-through;}
+  .chip.pin{ background: rgba(255,180,84,0.08); color: var(--amber); border-color: rgba(255,180,84,0.3);}
+
+  /* ---- scorecard table ---- */
+  .sc-table{ width:100%; border-collapse: collapse; font-size: 14px; }
+  .sc-table th{
+    text-align:left; font-family: var(--mono); font-size:11px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.05em; padding: 10px 12px; border-bottom:1px solid var(--border);
+  }
+  .sc-table td{ padding: 14px 12px; border-bottom: 1px solid var(--border); }
+  .sc-table td.sec{ font-weight:600; }
+  .sc-table .bar-wrap{ display:flex; align-items:center; gap:8px; }
+  .bar-bg{ flex:1; height:6px; background: var(--panel-2); border-radius:3px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:3px; }
+  .bar-fill.before{ background: var(--del); }
+  .bar-fill.after{ background: var(--add); }
+  .delta-cell{ font-family: var(--mono); font-weight:700; color: var(--amber); }
+  .overall-row td{ font-weight: 800; font-size: 16px; background: var(--panel-2); }
+
+  /* ---- day plan ---- */
+  .day{
+    display:flex; gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--border);
+  }
+  .day:last-child{ border-bottom:none; }
+  .day-num{
+    font-family: var(--mono); font-size: 22px; font-weight:800; color: var(--text-faint);
+    width: 56px; flex-shrink:0;
+  }
+  .day-body h4{ font-size: 16px; font-weight:700; margin-bottom: 8px; }
+  .day-body p, .day-body li{ color: var(--text-dim); font-size: 14.5px; }
+  .day-body ul{ padding-left: 18px; margin-top:6px; }
+  .post-draft{
+    font-family: var(--mono); font-size: 13px; background: var(--panel-2);
+    border: 1px dashed var(--border); border-radius: 8px; padding: 14px 16px; margin-top: 10px;
+    white-space: pre-wrap; color: var(--text);
+  }
+  .char-count{ font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-top:6px;}
+
+  /* ---- summary card ---- */
+  .summary-card{
+    background: linear-gradient(160deg, #171b26, #10131b);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 34px; position:relative; overflow:hidden;
+  }
+  .summary-card::before{
+    content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px;
+    background: radial-gradient(circle, rgba(126,231,135,0.12), transparent 70%);
+  }
+  .summary-card h4{ font-size: 20px; font-weight:800; margin-bottom: 18px; }
+  .sum-scores{ display:flex; gap: 30px; align-items:center; margin-bottom:22px; }
+  .sum-scores .arrow{ color: var(--text-faint); font-size: 22px; }
+  .sum-scores .num{ font-family: var(--mono); font-weight:800; font-size: 34px; }
+  .sum-scores .before .num{ color: var(--del); }
+  .sum-scores .after .num{ color: var(--add); }
+  .sum-scores .num-label{ font-family:var(--mono); font-size: 10px; color: var(--text-faint); text-transform:uppercase; }
+  .sum-list{ list-style:none; margin-bottom: 20px; }
+  .sum-list li{ font-size: 14.5px; color: var(--text-dim); padding: 6px 0; display:flex; gap:10px;}
+  .sum-list li b{ color:var(--text); font-weight:600; }
+  .sum-highlight{
+    font-size: 14.5px; background: var(--add-bg); border-left: 3px solid var(--add);
+    padding: 12px 14px; border-radius: 6px; color: var(--text);
+  }
+  .copy-btn{
+    margin-top: 20px; font-family: var(--mono); font-size: 13px; background: var(--amber);
+    color: #14171f; border:none; padding: 10px 20px; border-radius: 8px; font-weight:700; cursor:pointer;
+  }
+  .copy-btn:hover{ opacity:0.9; }
+
+  footer{ text-align:center; padding: 50px 24px; color: var(--text-faint); font-family: var(--mono); font-size:12px; }
+
+  @media (max-width: 640px){
+    .hero{ padding-top: 50px; }
+    .day{ flex-direction:column; gap:6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+  <span class="path"><b>profile-audit</b> / piyush-kumar-a261623a1.review</span>
+  <span class="badge">5 issues found</span>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">Code Review · LinkedIn Profile</div>
+  <h1 class="hero-title">This profile <span class="strike">describes you</span><br>doesn't sell you.</h1>
+  <p class="hero-sub">Full audit of your headline, About, experience listing, and skills — with the exact rewrite, and a 7-day plan to make recruiters actually stop scrolling. Based only on what's really on your profile right now.</p>
+  <div class="score-row">
+    <div class="score-card before"><div class="label">Before</div><div class="value">34<small>/100</small></div></div>
+    <div class="score-card after"><div class="label">After</div><div class="value">78<small>/100</small></div></div>
+    <div class="score-card delta"><div class="label">Change</div><div class="value">+44</div></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" data-tab="roast">01 Roast</button>
+  <button class="tab" data-tab="rebuild">02 Rebuild</button>
+  <button class="tab" data-tab="scorecard">03 Scorecard</button>
+  <button class="tab" data-tab="plan">04 7-Day Plan</button>
+  <button class="tab" data-tab="summary">05 Summary Card</button>
+</div>
+
+<!-- ===================== PART 1: ROAST ===================== -->
+<section class="panel active" id="roast">
+  <h2 class="section-title">Part 1</h2>
+  <h3 class="block-title">The Roast — what a recruiter actually sees</h3>
+
+  <div class="card">
+    <div class="card-head"><h4>Headline</h4><span class="pill low">3/10</span></div>
+    <div class="quote">"Highly motivated BCA Student || Aspiring Software Developer || Python • Java • Full Stack Developer ||"</div>
+    <div class="reveal">
+      <div class="reveal-line"><span class="tag">❌</span><span><b>The problem:</b> "Highly motivated" and "Aspiring" are the two most overused, meaningless words on student LinkedIn. Every recruiter has read "highly motivated" 10,000 times — it says nothing about what you can actually do. Trailing pipes ("||...||") also look like a template you copied, not a headline you wrote.</span></div>
+      <div class="reveal-line"><span class="tag">🧠</span><span><b>Why it hurts:</b> Recruiters skim headlines in under 2 seconds while scrolling search results. "Aspiring" quietly tells them "not ready yet" — even if that's not what you meant. It self-selects you out before they even open your profile.</span></div>
+      <div class="reveal-line"><span class="tag">🔍</span><span><b>Invisible cost:</b> LinkedIn's recruiter search is keyword-driven. You have zero mention of what you actually want (internship), no proof point (a project, a number, a stack you can build in), so you rank lower for "Python Developer Intern" searches than students with weaker skills but sharper headlines.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h4>About — First 2 Lines</h4><span class="pill low">2/10</span></div>
+    <div class="quote">"I have hands-on experience with Python, Java, and basic web technologies, and I enjoy learning by building practical projects and continuously improving my skills."</div>
+    <div class="reveal">
+      <div class="reveal-line"><span class="tag">❌</span><span><b>The problem:</b> This is the make-or-break real estate — the only part visible before "see more" — and it's a summary sentence, not a hook. "Basic web technologies" actively undersells you. "Continuously improving my skills" is filler every profile on Earth could say.</span></div>
+      <div class="reveal-line"><span class="tag">🧠</span><span><b>Why it hurts:</b> A recruiter scanning 40 profiles in 10 minutes will not click "see more" for a sentence that could belong to literally any CS student. You need something specific enough that only you could have written it.</span></div>
+      <div class="reveal-line"><span class="tag">🔍</span><span><b>Invisible cost:</b> You never get to Part 2 of your own pitch. The strongest thing about you — that you build real projects — is buried below the fold where most people never scroll.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h4>About — Full Section</h4><span class="pill low">3/10</span></div>
+    <div class="reveal">
+      <div class="reveal-line"><span class="tag">❌</span><span><b>The problem:</b> The full About is essentially two sentences: what you know, and what you want. There's no story, no proof, no named project, no numbers, and no call-to-action telling a reader what to do next.</span></div>
+      <div class="reveal-line"><span class="tag">🧠</span><span><b>Why it hurts:</b> Recruiters and even fellow students judge "can this person actually build things" by evidence, not adjectives. Right now there is zero evidence — no project name, no outcome, no "I built X that does Y."</span></div>
+      <div class="reveal-line"><span class="tag">🔍</span><span><b>Invisible cost:</b> Anyone who does read the full About still has no reason to message you, since there's no CTA and no proof to react to.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h4>Experience</h4><span class="pill low">1/10</span></div>
+    <div class="quote">Only entry: "Graduate Student, Dr. Virendra Swarup Institute of Computer Studies, Kanpur"</div>
+    <div class="reveal">
+      <div class="reveal-line"><span class="tag">❌</span><span><b>The problem:</b> This isn't work experience — it's your education, mislabeled as an Experience entry. There's no internship, freelance work, hackathon, or open-source contribution listed anywhere.</span></div>
+      <div class="reveal-line"><span class="tag">🧠</span><span><b>Why it hurts:</b> When a recruiter clicks into your profile expecting to see what you've done and finds a duplicate of your Education section, it reads as "nothing to show yet" — even if you have real projects sitting on your laptop or GitHub that just aren't on LinkedIn.</span></div>
+      <div class="reveal-line"><span class="tag">🔍</span><span><b>Invisible cost:</b> This is the single biggest gap on your profile. For a student targeting internships, your projects ARE your experience — and right now they're invisible.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h4>Skills & Keywords</h4><span class="pill mid">5/10</span></div>
+    <div class="quote">Front-End Development · Full-Stack Development · Web Development · Java · C++ · DBMS · Python</div>
+    <div class="reveal">
+      <div class="reveal-line"><span class="tag">❌</span><span><b>The problem:</b> The list is reasonable but generic — "Web Development" and "Full-Stack Development" overlap with "Front-End Development" without adding new search surface. There's no framework, tool, or specific technology (React, Git, MySQL, VS Code, REST APIs) that recruiters actually filter by.</span></div>
+      <div class="reveal-line"><span class="tag">🧠</span><span><b>Why it hurts:</b> Recruiter search on LinkedIn is literal — they search exact terms like "Git" or "MySQL," not "Database Management System." Broad category skills without the specific tools underneath them cost you search visibility.</span></div>
+      <div class="reveal-line"><span class="tag">🔍</span><span><b>Invisible cost:</b> You're likely invisible to searches for the exact tools you probably already use in your projects but haven't listed.</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: rgba(255,180,84,0.3);">
+    <h4 style="margin-bottom:4px;">Overall Profile Strength</h4>
+    <div style="font-family:var(--mono); font-size:40px; font-weight:800; color:var(--del);">34<span style="font-size:20px; color:var(--text-faint);">/100</span></div>
+    <p style="color:var(--text-dim); font-size:14px; margin-top:6px;">Not because you lack ability — because the profile currently shows zero evidence of it. This is fixable in one sitting.</p>
+  </div>
+</section>
+
+<!-- ===================== PART 2: REBUILD ===================== -->
+<section class="panel" id="rebuild">
+  <h2 class="section-title">Part 2</h2>
+  <h3 class="block-title">The Rebuild</h3>
+
+  <div class="card">
+    <h4 style="margin-bottom:14px;">Headline — 3 options</h4>
+    <div class="opt">
+      <div class="opt-label">Option 1 · Keyword-optimized</div>
+      <div class="opt-text">BCA Student | Python & Java Developer | Building Full-Stack Projects | Open to Remote Internships</div>
+      <div class="opt-why">Use when: you want to rank in recruiter search. Every clause is a term recruiters actually filter by — "Python," "Java," "Full-Stack," "Remote Internships."</div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">Option 2 · Value-proposition</div>
+      <div class="opt-text">I build full-stack apps with Python & Java, then break them until they work | BCA Student seeking remote internships</div>
+      <div class="opt-why">Use when: you want to sound like a real person, not a keyword list — good for connection requests and comments where personality helps you stand out.</div>
+    </div>
+    <div class="opt">
+      <div class="opt-label">Option 3 · Authority</div>
+      <div class="opt-text">CS Student → Software Developer | Python, Java, Full-Stack | Documenting what I learn building real projects</div>
+      <div class="opt-why">Use when: you start posting content regularly — this framing supports a "student in public" content angle and thought-leadership posts.</div>
+    </div>
+    <p style="color:var(--text-dim); font-size:13.5px; margin-top:10px;"><b style="color:var(--text)">Recommendation for you right now:</b> Option 1. Your goal is remote paid internships, so search visibility should win until you're actively posting.</p>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-bottom:14px;">About Section — rewrite</h4>
+    <p style="color:var(--text-dim); font-size:13.5px; margin-bottom:14px;"><b style="color:var(--amber)">⚠ Note:</b> You haven't given me a specific named project, a metric, or a portfolio/GitHub link yet — so the bracketed parts below are placeholders. Fill them with your real project details before publishing; do not leave them as-is.</p>
+    <div class="diff">
+      <div class="diff-line add"><span class="sym">+</span>Most people learn to code by watching tutorials. I learn by breaking things — then figuring out why.</div>
+      <div class="diff-line add"><span class="sym">+</span></div>
+      <div class="diff-line add"><span class="sym">+</span>I'm a BCA student building hands-on skills in Python, Java, and full-stack web development. Right now I'm [working on / just shipped] [PROJECT NAME] — a [one-line description of what it does and for whom].</div>
+      <div class="diff-line add"><span class="sym">+</span></div>
+      <div class="diff-line add"><span class="sym">+</span>Along the way I've picked up OOP principles, database design, and problem-solving skills that go beyond "I know the syntax" — I care about why code works, not just that it runs. [If you have a number — projects built, a hackathon rank, a course completion — add it here.]</div>
+      <div class="diff-line add"><span class="sym">+</span></div>
+      <div class="diff-line add"><span class="sym">+</span>I'm actively looking for a remote paid internship where I can work on real problems, learn from an actual engineering team, and contribute from day one — not just observe.</div>
+      <div class="diff-line add"><span class="sym">+</span></div>
+      <div class="diff-line add"><span class="sym">+</span>📩 If you're hiring interns or know someone who is, message me — or check my Featured section for project links.</div>
+    </div>
+    <p style="font-size:13px; color:var(--text-dim); margin-top:6px;">Structure: Hook (line 1) → Story (lines 2-4) → Proof (line 5) → CTA (last line). The hook is written to survive being cut off at "see more" — it's a complete, curiosity-driving sentence on its own.</p>
+    <div class="chips">
+      <span class="chip">Python</span><span class="chip">Java</span><span class="chip">full-stack web development</span><span class="chip">OOP</span><span class="chip">database design</span><span class="chip">problem-solving</span><span class="chip">remote internship</span>
+    </div>
+    <p style="font-size:12.5px; color:var(--text-faint); margin-top:8px;">Keywords embedded above — these are the exact phrases recruiters search for interns.</p>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-bottom:14px;">Experience — what to actually list</h4>
+    <p style="color:var(--text-dim); font-size:14px; margin-bottom:14px;">You don't have a job/internship yet, and I won't invent one. But leaving Experience as a duplicate of your Education is worse than leaving it structured properly. Here's the fix:</p>
+    <div class="diff">
+      <div class="diff-line del"><span class="sym">−</span>Experience: "Graduate Student, Dr. Virendra Swarup Institute..." (duplicate of Education)</div>
+      <div class="diff-line add"><span class="sym">+</span>Remove this from Experience — it belongs only in Education, where it already is.</div>
+      <div class="diff-line add"><span class="sym">+</span>Add each real project you've built as its own Experience-style entry (title: "Project: [Name]"), with bullets like: "Built [X] using Python/Java that does [Y] — [any measurable result, even 'reduced manual steps from 5 to 1']."</div>
+      <div class="diff-line add"><span class="sym">+</span>Add anything else real: a college hackathon, a coding club role, a freelance favor for someone, a Kaggle/LeetCode streak. These count as experience for a student profile.</div>
+    </div>
+    <p style="font-size:13.5px; color:var(--text-dim);"><b style="color:var(--text)">Bullet rules going forward:</b> lead with the achievement, start with an action verb (Built, Automated, Designed, Reduced, Implemented), add a number wherever you honestly can — even "processes 3 file types" beats no number at all.</p>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-bottom:14px;">Skills — priority additions, removals, pins</h4>
+    <p style="font-size:13px; color:var(--text-faint); margin-bottom:6px;">Add (in priority order) — these are the specific, searchable tools underneath what you already listed:</p>
+    <div class="chips">
+      <span class="chip add-skill">Git & GitHub</span><span class="chip add-skill">MySQL</span><span class="chip add-skill">REST APIs</span><span class="chip add-skill">React.js</span><span class="chip add-skill">Node.js</span><span class="chip add-skill">Data Structures & Algorithms</span><span class="chip add-skill">VS Code</span><span class="chip add-skill">JavaScript</span><span class="chip add-skill">Bootstrap / Tailwind CSS</span><span class="chip add-skill">Agile Basics</span>
+    </div>
+    <p style="font-size:13px; color:var(--text-faint); margin: 14px 0 6px;">Remove or de-emphasize — too broad, overlaps with more specific skills above:</p>
+    <div class="chips">
+      <span class="chip rm-skill">Web Development</span><span class="chip rm-skill">Full-Stack Development</span>
+    </div>
+    <p style="font-size:12.5px; color:var(--text-dim); margin-top:4px;">(Only remove these once you've added the specific tools above — don't leave the category empty.)</p>
+    <p style="font-size:13px; color:var(--text-faint); margin: 14px 0 6px;">Pin to top (LinkedIn lets you feature 3):</p>
+    <div class="chips">
+      <span class="chip pin">Python</span><span class="chip pin">Java</span><span class="chip pin">Git & GitHub</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PART 3: SCORECARD ===================== -->
+<section class="panel" id="scorecard">
+  <h2 class="section-title">Part 3</h2>
+  <h3 class="block-title">Before vs After Scorecard</h3>
+  <div class="card">
+    <table class="sc-table">
+      <thead><tr><th>Section</th><th>Before</th><th></th><th>After</th><th>Δ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="sec">Headline</td>
+          <td style="width:120px"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill before" style="width:30%"></div></div><span style="font-family:var(--mono); font-size:12px;">3</span></div></td>
+          <td style="text-align:center; color:var(--text-faint);">→</td>
+          <td style="width:120px"><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill after" style="width:80%"></div></div><span style="font-family:var(--mono); font-size:12px;">8</span></div></td>
+          <td class="delta-cell">+5</td>
+        </tr>
+        <tr>
+          <td class="sec">About (Hook)</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill before" style="width:20%"></div></div><span style="font-family:var(--mono); font-size:12px;">2</span></div></td>
+          <td style="text-align:center; color:var(--text-faint);">→</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill after" style="width:80%"></div></div><span style="font-family:var(--mono); font-size:12px;">8</span></div></td>
+          <td class="delta-cell">+6</td>
+        </tr>
+        <tr>
+          <td class="sec">About (Full)</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill before" style="width:30%"></div></div><span style="font-family:var(--mono); font-size:12px;">3</span></div></td>
+          <td style="text-align:center; color:var(--text-faint);">→</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill after" style="width:70%"></div></div><span style="font-family:var(--mono); font-size:12px;">7</span></div></td>
+          <td class="delta-cell">+4</td>
+        </tr>
+        <tr>
+          <td class="sec">Experience</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill before" style="width:10%"></div></div><span style="font-family:var(--mono); font-size:12px;">1</span></div></td>
+          <td style="text-align:center; color:var(--text-faint);">→</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill after" style="width:60%"></div></div><span style="font-family:var(--mono); font-size:12px;">6</span></div></td>
+          <td class="delta-cell">+5</td>
+        </tr>
+        <tr>
+          <td class="sec">Skills / Keywords</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill before" style="width:50%"></div></div><span style="font-family:var(--mono); font-size:12px;">5</span></div></td>
+          <td style="text-align:center; color:var(--text-faint);">→</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill after" style="width:80%"></div></div><span style="font-family:var(--mono); font-size:12px;">8</span></div></td>
+          <td class="delta-cell">+3</td>
+        </tr>
+        <tr class="overall-row">
+          <td class="sec">OVERALL</td>
+          <td style="color:var(--del)">34/100</td>
+          <td style="text-align:center; color:var(--text-faint);">→</td>
+          <td style="color:var(--add)">78/100</td>
+          <td class="delta-cell">+44</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12.5px; color:var(--text-faint); margin-top:14px;">Experience caps at 6/10 even after the fix — it can't score higher until you add a real internship or a genuine outside-of-class project. That's on you to build, not something a rewrite can fake.</p>
+  </div>
+</section>
+
+<!-- ===================== PART 4: 7-DAY PLAN ===================== -->
+<section class="panel" id="plan">
+  <h2 class="section-title">Part 4</h2>
+  <h3 class="block-title">7-Day LinkedIn Activation Plan</h3>
+
+  <div class="card">
+    <div class="day">
+      <div class="day-num">01</div>
+      <div class="day-body">
+        <h4>Make all profile changes</h4>
+        <ul>
+          <li>Swap in Headline Option 1</li>
+          <li>Replace About with the rewrite (fill in your real project name + metric first)</li>
+          <li>Remove the duplicate "Graduate Student" Experience entry; add at least one real project entry</li>
+          <li>Add the 10 priority skills; remove the 2 overly broad ones</li>
+          <li>Pin Python, Java, Git & GitHub to the top of Skills</li>
+          <li>Add a profile photo check — plain background, visible face, no filters</li>
+        </ul>
+      </div>
+    </div>
+    <div class="day">
+      <div class="day-num">02</div>
+      <div class="day-body">
+        <h4>Publish Post #1 — "I rebuilt my LinkedIn" post</h4>
+        <div class="post-draft">I just rewrote my entire LinkedIn profile — and it made me realize how badly I was underselling myself.
+
+For months my headline said "aspiring software developer." Turns out "aspiring" was the exact word making recruiters scroll past me.
+
+Here's what I fixed:
+→ Headline: from vague to specific (Python, Java, actual goal)
+→ About: added the ONE project I'm actually proud of
+→ Experience: removed the fluff, added real work
+
+Still a BCA student. Still learning. But now my profile actually says what I can do — not just that I want to do it.
+
+If you're a student, go re-read your own headline right now. Would YOU click on it?
+
+#OpenToWork #Python #Java #StudentDeveloper</div>
+        <div class="char-count">~740 characters — well under the 1,300 limit, room to add a project screenshot in comments.</div>
+      </div>
+    </div>
+    <div class="day">
+      <div class="day-num">03</div>
+      <div class="day-body">
+        <h4>Send 10 strategic connection requests</h4>
+        <p><b>Who to target:</b> (1) Engineering managers / tech leads at companies with active internship postings, (2) HR/talent partners at 5-20 companies you'd actually want to intern at, (3) senior CS students or recent grads at your college who landed internships — they refer people.</p>
+        <div class="post-draft">Hi [Name], I'm a BCA student building projects in Python/Java and currently looking for a remote internship. I really liked [something specific about their work/company]. Would love to stay connected and learn from your journey.</div>
+        <div class="char-count">~280 characters — under the 300 limit. Always personalize the [bracket] before sending.</div>
+      </div>
+    </div>
+    <div class="day">
+      <div class="day-num">04</div>
+      <div class="day-body">
+        <h4>Comment on 5 posts in your target space</h4>
+        <p>Use the <b>Value Comment formula:</b> Agree + Add Insight + Ask a Question.</p>
+        <ul>
+          <li><b>Agree:</b> "This matches what I've seen building small Python projects too —"</li>
+          <li><b>Add insight:</b> one specific, honest observation from your own experience, even a small one</li>
+          <li><b>Ask a question:</b> something that invites the poster to reply — this is what actually gets you noticed, not the agreement</li>
+        </ul>
+      </div>
+    </div>
+    <div class="day">
+      <div class="day-num">05</div>
+      <div class="day-body">
+        <h4>Publish Post #2 — lessons-learned / hot take</h4>
+        <div class="post-draft">Unpopular opinion as a student: tutorials taught me syntax. Broken projects taught me how to actually code.
+
+I've lost count of how many times a Python script failed and I had no idea why — and had to actually read the error instead of copy-pasting a fix.
+
+That struggle is where the real learning happened. Tutorials feel like progress. Debugging your own mess is progress.
+
+If you're a student stuck watching video after video — close the tab and go break something instead.
+
+#Python #Java #LearningInPublic #StudentDeveloper</div>
+        <div class="char-count">~600 characters.</div>
+      </div>
+    </div>
+    <div class="day">
+      <div class="day-num">06</div>
+      <div class="day-body">
+        <h4>Engage with every comment + send 5 more connections</h4>
+        <p>Reply to every single comment on both posts within a few hours — this is what LinkedIn's algorithm rewards most, more than the post itself. Repeat Day 3's targeting for 5 more people, ideally at companies you haven't reached out to yet.</p>
+      </div>
+    </div>
+    <div class="day">
+      <div class="day-num">07</div>
+      <div class="day-body">
+        <h4>Review profile views and acceptance rate</h4>
+        <p><b>What the numbers mean:</b> A jump in profile views after Day 1-2 confirms your headline/keywords are now surfacing in search. A connection acceptance rate above ~40% means your request message is landing well; below that, your message is too generic or you're targeting the wrong people. Post impressions above 500 for a student account is a strong signal — double down on whichever post did better next week.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PART 5: SUMMARY CARD ===================== -->
+<section class="panel" id="summary">
+  <h2 class="section-title">Part 5</h2>
+  <h3 class="block-title">What I Learned Today — shareable card</h3>
+
+  <div class="summary-card" id="summaryCardText">
+    <h4>I let AI roast my LinkedIn profile today. Here's what changed:</h4>
+    <div class="sum-scores">
+      <div class="before"><div class="num">34</div><div class="num-label">Before /100</div></div>
+      <div class="arrow">→</div>
+      <div class="after"><div class="num">78</div><div class="num-label">After /100</div></div>
+    </div>
+    <p style="font-size:14px; font-weight:700; color:var(--text-dim); margin-bottom:10px;">Top 3 mistakes I was making:</p>
+    <ul class="sum-list">
+      <li><b>1.</b> Headline said "aspiring" — a word that quietly tells recruiters "not ready yet"</li>
+      <li><b>2.</b> About section had zero proof — no project, no story, no numbers</li>
+      <li><b>3.</b> My only "Experience" entry was just a copy of my Education</li>
+    </ul>
+    <div class="sum-highlight">The #1 thing that made the biggest difference: replacing vague adjectives with one real, named project — proof beats enthusiasm every time.</div>
+    <button class="copy-btn" onclick="copySummary()">Copy summary to post on LinkedIn</button>
+  </div>
+</section>
+
+<footer>piyush-kumar-audit.review — generated for internship-track profile · fill in [PROJECT NAME] placeholders before publishing</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+      window.scrollTo({top: document.getElementById('tabs').offsetTop - 10, behavior:'smooth'});
+    });
+  });
+
+  function copySummary(){
+    const text = `I let AI roast my LinkedIn profile today. Here's what changed:
+
+Before: 34/100
+After: 78/100
+
+Top 3 mistakes I was making:
+1. Headline said "aspiring" — a word that quietly tells recruiters "not ready yet"
+2. About section had zero proof — no project, no story, no numbers
+3. My only "Experience" entry was just a copy of my Education
+
+The #1 thing that made the biggest difference: replacing vague adjectives with one real, named project — proof beats enthusiasm every time.`;
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn = document.querySelector('.copy-btn');
+      const original = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(()=>{ btn.textContent = original; }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>

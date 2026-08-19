@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare & Decide Builder</title>
+<style>
+:root{--bg:#070910;--card:#101522;--line:#283143;--text:#f5f7fb;--muted:#8d98ac;--a:#7c5cff;--c:#27d7ef}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0,#321d68,transparent 35%),radial-gradient(circle at 95% 5%,#073e4c,transparent 30%),var(--bg);color:var(--text);font:14px system-ui,sans-serif}.app{max-width:1450px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:20px}.brand{display:flex;gap:12px;align-items:center}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,var(--a),var(--c))}h1{margin:0;font-size:21px}.muted{color:var(--muted)}button{font:inherit;cursor:pointer}.btn{border:0;border-radius:10px;padding:11px 15px;background:linear-gradient(135deg,var(--a),#5e70ff);color:white;font-weight:700}.btn.secondary{background:#151b28;border:1px solid var(--line)}.layout{display:grid;grid-template-columns:340px 1fr;gap:18px}.stack{display:flex;flex-direction:column;gap:18px}.card{background:#101522ed;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.head h2{margin:0;font-size:15px}.badge{padding:5px 8px;border-radius:99px;background:#171e2c;border:1px solid var(--line);color:#aeb8ca;font-size:11px}.brief{background:#0b0f17;border:1px solid var(--line);border-radius:12px;padding:14px;line-height:1.6}.brief b{display:block;color:#fff;margin-bottom:4px}.criteria{display:grid;gap:12px}.criterion{padding:12px;background:#0b0f16;border:1px solid var(--line);border-radius:11px}.row{display:flex;justify-content:space-between;margin-bottom:8px}.range{width:100%;accent-color:var(--a)}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.hero h2{font-size:30px;line-height:1.15;margin:10px 0}.hero p{color:#aab4c4;line-height:1.7}.winner{background:linear-gradient(135deg,#1a143d,#0d1923);border:1px solid #6e5af655;border-radius:14px;padding:17px}.winner small{color:#aaa0ff;text-transform:uppercase;letter-spacing:.12em}.winner h2{font-size:24px;margin:7px 0}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.rank{background:#0b0f16;border:1px solid var(--line);border-radius:12px;padding:13px}.rank.top{border-color:#8068ff88}.num{font-size:11px;color:var(--muted)}.name{font-weight:800;margin:7px 0;min-height:34px}.score{font-size:25px;font-weight:900}.bar{height:6px;background:#252e3e;border-radius:8px;overflow:hidden;margin-top:10px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--c))}.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:left}th{font-size:11px;color:var(--muted);text-transform:uppercase}.sources{display:grid;gap:8px}.source{background:#0b0f16;border:1px solid var(--line);border-radius:10px;padding:11px;line-height:1.5}.source a{color:#bdb4ff}.flag{background:#19150b;border:1px solid #5c4820;color:#d9bd72;padding:11px;border-radius:10px;line-height:1.5;font-size:12px}details{background:#0b0f16;border:1px solid var(--line);border-radius:12px}summary{padding:14px;cursor:pointer;font-weight:700}.research{padding:0 14px 14px;color:#aeb8c8;line-height:1.65}.method{display:grid;grid-template-columns:1fr 1fr;gap:10px}.method div{padding:12px;background:#111725;border:1px solid var(--line);border-radius:10px}.method b{display:block;color:white;margin-bottom:5px}@media(max-width:1050px){.layout{grid-template-columns:1fr}}@media(max-width:760px){.app{padding:12px}.top{align-items:flex-start;flex-direction:column}.hero{display:block}.hero>div{margin-bottom:15px}.grid4,.method{grid-template-columns:1fr 1fr}}@media(max-width:500px){.grid4,.method{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<div class="brand"><div class="logo">CD</div><div><h1>Compare & Decide Builder</h1><div class="muted">Evidence-led decision intelligence</div></div></div>
+<button class="btn secondary" onclick="window.print()">Print / Save PDF</button>
+</header>
+<div class="layout">
+<aside class="stack">
+<section class="card"><div class="head"><h2>Decision brief</h2><span class="badge">Research preset</span></div>
+<div class="brief"><b>Decision</b>Choose a lightweight laptop for a student or young professional in India.<br><br><b>Options</b>Apple MacBook Air M5 · Dell XPS 13 · HP OmniBook X 14 · ASUS Zenbook A14</div></section>
+<section class="card"><div class="head"><h2>Adjust priorities</h2><span class="badge" id="total">100%</span></div>
+<div class="criteria">
+<div class="criterion"><div class="row"><b>Price</b><span id="wp">30%</span></div><input id="price" class="range" type="range" min="0" max="100" value="30"></div>
+<div class="criterion"><div class="row"><b>Wi-Fi battery</b><span id="wb">30%</span></div><input id="battery" class="range" type="range" min="0" max="100" value="30"></div>
+<div class="criterion"><div class="row"><b>Portability</b><span id="ww">25%</span></div><input id="weight" class="range" type="range" min="0" max="100" value="25"></div>
+<div class="criterion"><div class="row"><b>Storage</b><span id="ws">15%</span></div><input id="storage" class="range" type="range" min="0" max="100" value="15"></div>
+</div><p class="muted">Weights are normalized automatically.</p><button class="btn" onclick="resetWeights()">Reset</button></section>
+<section class="card"><div class="head"><h2>Data integrity</h2><span style="color:#35d39a">● Verified</span></div><div class="flag">No synthetic product measurements are used. Final scores are derived calculations from cited raw data.</div></section>
+</aside>
+<main class="stack">
+<section class="card hero"><div><span class="badge">LIVE WEIGHTED DECISION MODEL</span><h2>Choose the option that matches your priorities.</h2><p>Move the sliders and the ranking updates instantly. Lower price and weight score better; higher battery runtime and storage score better.</p></div><div class="winner" id="winner"></div></section>
+<section class="card"><div class="head"><h2>Live ranking</h2><span class="badge">Derived score</span></div><div class="grid4" id="ranking"></div></section>
+<section class="card"><div class="head"><h2>Evidence table</h2><span class="badge">Source-backed</span></div><div class="table"><table><thead><tr><th>Option</th><th>Price</th><th>Wi-Fi test</th><th>Weight</th><th>Storage</th></tr></thead><tbody id="evidence"></tbody></table></div></section>
+<section class="card"><div class="head"><h2>Criterion winners</h2></div><div class="grid4" id="wins"></div></section>
+<section class="card"><div class="head"><h2>Sources</h2><span class="badge">12 citations</span></div><div class="sources" id="sources"></div></section>
+<details><summary>How this was researched</summary><div class="research">
+<p>Manufacturer pages were used for official configurations, India pricing, storage and weight where available. Notebookcheck independent reviews were used for comparable Wi-Fi battery tests.</p>
+<div class="method"><div><b>Price</b>Official India-listed prices are used where available. Prices can change.</div><div><b>Battery</b>Independent Wi-Fi measurements are used instead of mixing manufacturer “up to” claims.</div><div><b>Portability</b>Lower device weight is treated as better.</div><div><b>Storage</b>Base configuration storage is compared.</div></div>
+<p><b>Scoring:</b> each criterion is normalized between the best and worst observed value, then multiplied by the user's normalized weight. The result is a transparent derived score, not a reviewer rating.</p>
+<p><b>Conflict handling:</b> manufacturer battery claims can differ from independent tests. Independent testing is used for the battery score because it is directly comparable.</p>
+</div></details>
+<section class="card"><div class="head"><h2>Decision guidance</h2></div><div id="guide" class="muted" style="line-height:1.7"></div></section>
+</main>
+</div>
+</div>
+<script>
+const D=[
+{name:"Apple MacBook Air 13 M5",price:119900,battery:16.2,weight:1.23,storage:512,pl:"₹1,19,900",bl:"16.2 h",wl:"1.23 kg",sl:"512 GB",src:[["Apple India — MacBook Air M5 launch","https://www.apple.com/in/newsroom/2026/03/apple-introduces-the-new-macbook-air-with-m5/"],["Apple Support — M5 specifications","https://support.apple.com/en-in/126320"],["Notebookcheck — MacBook Air 13 M5","https://www.notebookcheck.net/Insane-performance-and-efficiency-without-fans-Apple-MacBook-Air-13-M5-Entry-Review.1242707.0.html"]]},
+{name:"Dell XPS 13 9345",price:147489.98,battery:26.4,weight:1.17,storage:512,pl:"₹1,47,489.98",bl:"26.4 h",wl:"1.17 kg",sl:"512 GB",src:[["Dell India — XPS pricing","https://www.dell.com/en-in/shop/dell-laptops/scr/laptops/performance/appref%3Dnon-touch-screen-touch-screen"],["Dell India — XPS 13 9345","https://www.dell.com/en-in/shop/dell-laptops/xps-13-laptop/spd/xps-13-9345-laptop"],["Notebookcheck — Dell XPS 13 9345","https://www.notebookcheck.net/Dell-XPS-13-9345-Snapdragon-X-Elite-review-Undercutting-the-Intel-Core-Ultra-7.869106.0.html"]]},
+{name:"HP OmniBook X 14",price:169720.66,battery:18.62,weight:1.30,storage:1024,pl:"₹1,69,720.66",bl:"18.6 h",wl:"1.30 kg",sl:"1 TB",src:[["HP India — OmniBook X 14","https://www.hp.com/in-en/shop/products/laptops/hp-omnibook-x-laptop-next-gen-ai-14-ka0068tu-d7nc7pa-acj"],["HP Support — OmniBook X","https://support.hp.com/in-en/document/ish_13814647-13814696-16"],["Notebookcheck — HP OmniBook X 14","https://www.notebookcheck.net/HP-OmniBook-X-AI-14-Review-Snapdragon-laptop-for-everyday-use-with-long-battery-life-but-weak-display.934954.0.html"]]},
+{name:"ASUS Zenbook A14 UX3407",price:165990,battery:16.1,weight:.99,storage:512,pl:"₹1,65,990",bl:"16.1 h",wl:"0.99 kg",sl:"512 GB",src:[["ASUS India — Zenbook A14","https://www.asus.com/in/laptops/for-home/zenbook/asus-zenbook-a14-ux3407/shop/"],["ASUS India — technical specifications","https://www.asus.com/in/laptops/for-home/zenbook/asus-zenbook-a14-ux3407/techspec/"],["Notebookcheck — Zenbook A14","https://www.notebookcheck.net/Asus-Zenbook-A14-Laptop-Review-Snapdragon-X2-Elite-against-the-MacBook-Air-M5.1261944.0.html"]]}
+];
+const $=x=>document.getElementById(x), ids=["price","battery","weight","storage"];
+function W(){let a=Object.fromEntries(ids.map(i=>[i,+$(i).value])),t=Object.values(a).reduce((x,y)=>x+y)||1;return Object.fromEntries(Object.entries(a).map(([k,v])=>[k,v/t]))}
+function N(arr,v,low){let mn=Math.min(...arr),mx=Math.max(...arr);return mx===mn?100:(low?(mx-v)/(mx-mn):(v-mn)/(mx-mn))*100}
+function render(){
+let w=W(),r=D.map(x=>({...x,s:N(D.map(d=>d.price),x.price,1)*w.price+N(D.map(d=>d.battery),x.battery,0)*w.battery+N(D.map(d=>d.weight),x.weight,1)*w.weight+N(D.map(d=>d.storage),x.storage,0)*w.storage})).sort((a,b)=>b.s-a.s);
+$("wp").textContent=Math.round(w.price*100)+"%";$("wb").textContent=Math.round(w.battery*100)+"%";$("ww").textContent=Math.round(w.weight*100)+"%";$("ws").textContent=Math.round(w.storage*100)+"%";$("total").textContent=ids.reduce((a,i)=>a+ +$(i).value,0)+"%";
+$("winner").innerHTML="<small>Current best match</small><h2>"+r[0].name+"</h2><p><b>"+r[0].s.toFixed(1)+"/100</b> derived score.</p><p>This result reflects your current weighting.</p>";
+$("ranking").innerHTML=r.map((x,i)=>'<div class="rank '+(!i?"top":"")+'"><div class="num">#'+(i+1)+'</div><div class="name">'+x.name+'</div><div class="score">'+x.s.toFixed(1)+'</div><small>derived / 100</small><div class="bar"><i style="width:'+x.s+'%"></i></div></div>').join("");
+$("evidence").innerHTML=D.map(x=>"<tr><td><b>"+x.name+"</b></td><td>"+x.pl+"</td><td>"+x.bl+"</td><td>"+x.wl+"</td><td>"+x.sl+"</td></tr>").join("");
+let wins=[["Lowest price",D.reduce((a,b)=>a.price<b.price?a:b),"pl"],["Longest tested battery",D.reduce((a,b)=>a.battery>b.battery?a:b),"bl"],["Lightest",D.reduce((a,b)=>a.weight<b.weight?a:b),"wl"],["Most storage",D.reduce((a,b)=>a.storage>b.storage?a:b),"sl"]];
+$("wins").innerHTML=wins.map(x=>'<div class="rank"><div class="num">'+x[0]+'</div><div class="name">'+x[1].name+'</div><div class="score" style="font-size:20px">'+x[1][x[2]]+'</div><small>source-backed</small></div>').join("");
+$("sources").innerHTML=D.flatMap(x=>x.src.map(s=>'<div class="source"><b>'+x.name+'</b><br><a href="'+s[1]+'" target="_blank" rel="noopener">'+s[0]+'</a></div>')).join("");
+let hi=Object.entries(w).sort((a,b)=>b[1]-a[1])[0][0],lab={price:"price",battery:"battery endurance",weight:"portability",storage:"storage"}[hi];
+$("guide").innerHTML="<p><b>"+r[0].name+"</b> is currently ranked first.</p><p>Your highest-weighted criterion is <b>"+lab+"</b>. Increase a criterion's slider if it matters more to your real decision.</p><p>The score is a transparent mathematical model based only on the displayed measurements and cited sources.</p>";
+}
+function resetWeights(){$("price").value=30;$("battery").value=30;$("weight").value=25;$("storage").value=15;render()}
+ids.forEach(i=>$(i).addEventListener("input",render));render();
+</script>
+</body>
+</html>
